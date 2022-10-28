@@ -4,7 +4,16 @@ namespace GeneticAlgorithm
 {
   class Chromosome : IChromosome
   {
-    public int this[int index] => throw new System.NotImplementedException();
+    public int this[int index]
+    {
+      get 
+      {
+        if (index < 0 || index >= Length) {
+          throw new System.IndexOutOfRangeException($"Invalid index for gene. Expected between 0 and {Length}. Got: {index}");
+        }
+        return Genes[index];
+      }
+    }
 
     public double Fitness => throw new System.NotImplementedException();
 
