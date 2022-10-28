@@ -51,7 +51,16 @@ namespace GeneticAlgorithm
 
     public int CompareTo([AllowNull] IChromosome other)
     {
-      throw new System.NotImplementedException();
+      if(other == null) return 1;
+      if(Fitness == other.Fitness) return 0;
+      if(Fitness > other.Fitness)
+      {
+        return -1;
+      }
+      else
+      {
+        return 1;
+      }
     }
 
     public IChromosome[] Reproduce(IChromosome spouse, double mutationProb)
