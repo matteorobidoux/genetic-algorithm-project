@@ -20,11 +20,11 @@ namespace GeneticAlgorithm
       }
     }
 
-    public double Fitness => throw new System.NotImplementedException();
+    public double Fitness {get; set;}
 
-    public int[] Genes => throw new System.NotImplementedException();
+    public int[] Genes => _genes;
 
-    public long Length => throw new System.NotImplementedException();
+    public long Length => _genes.Length;
 
     public Chromosome(int numGenes, int lengthOfGenes, int? seed) 
     {
@@ -36,9 +36,17 @@ namespace GeneticAlgorithm
       {
         throw new ArgumentException($"The length of a gene must be a positive integer. Got: {lengthOfGenes}");
       }
-      this._genes = new int[numGenes];
-      this._lengthOfGenes = lengthOfGenes;
-      this._seed = seed;
+      _genes = new int[numGenes];
+      _lengthOfGenes = lengthOfGenes;
+      _seed = seed;
+    }
+
+    public Chromosome(Chromosome original)
+    {
+      _seed = original._seed;
+      _lengthOfGenes = original._lengthOfGenes;
+      Array.Copy(original._genes, _genes, original.Length);
+      Fitness = original.Fitness;
     }
 
     public int CompareTo([AllowNull] IChromosome other)
