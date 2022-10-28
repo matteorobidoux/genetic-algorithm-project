@@ -11,6 +11,7 @@ namespace RobbyVisualizer
         private SpriteBatch _spriteBatch;
         private SimulationSprite[,] _grid;
         private CookieMonsterSprite _cookieMonster;
+        private CookieSprite _cookie;
 
         public RobbyVisualizerGame()
         {
@@ -47,6 +48,9 @@ namespace RobbyVisualizer
                 xPos = 470;
                 yPos += 78;
             }
+
+            _cookie = new CookieSprite(this, 463, 23);
+            Components.Add(_cookie);
 
             // Moving square to square is -10 x and -10 y
             _cookieMonster = new CookieMonsterSprite(this, 200, 20);
