@@ -81,7 +81,19 @@ namespace GeneticAlgorithm
 
     public IChromosome[] Reproduce(IChromosome spouse, double mutationProb)
     {
-      throw new System.NotImplementedException();
+      IChromosome[] children = Crossover(spouse as Chromosome);
+      for (int i = 0; i < Length; i++)
+      {
+        foreach (var child in children)
+        {
+          double prob = _rand.NextDouble();
+          if (prob <= mutationProb)
+          {
+            child.Genes[i] = _rand.Next(_lengthOfGenes);
+          }
+        }
+      }
+      return children;
     }
 
     private Chromosome[] Crossover(Chromosome spouce) 
