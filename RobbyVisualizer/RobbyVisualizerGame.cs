@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace RobbyVisualizer
 {
@@ -9,9 +11,11 @@ namespace RobbyVisualizer
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private SimulationSprite[,] _grid;
+        private GridUnitSprite[,] _grid;
         private CookieMonsterSprite _cookieMonster;
         private CookieSprite _cookie;
+        private ButtonSprite _buttonSprite;
+        private Song _eatingCookie;
 
         public RobbyVisualizerGame()
         {
@@ -26,7 +30,7 @@ namespace RobbyVisualizer
             _graphics.PreferredBackBufferHeight = 980;
             _graphics.ApplyChanges();
 
-            _grid = new SimulationSprite[10,10];
+            _grid = new GridUnitSprite[10,10];
 
             int xPos = 470;
             int yPos = 30;
@@ -40,7 +44,7 @@ namespace RobbyVisualizer
                         color = Color.White;
                     }
 
-                    SimulationSprite gridUnit = new SimulationSprite(this, xPos, yPos, color);
+                    GridUnitSprite gridUnit = new GridUnitSprite(this, xPos, yPos, color);
                     _grid[i, j] = gridUnit;
                     Components.Add(gridUnit);
                     xPos += 78;
@@ -49,12 +53,16 @@ namespace RobbyVisualizer
                 yPos += 78;
             }
 
-            _cookie = new CookieSprite(this, 463, 23);
+            _cookie = new CookieSprite(this, 460, 98);
             Components.Add(_cookie);
 
             // Moving square to square is -10 x and -10 y
-            _cookieMonster = new CookieMonsterSprite(this, 200, 20);
+            _cookieMonster = new CookieMonsterSprite(this, 460, 20);
             Components.Add(_cookieMonster);
+
+            _buttonSprite = new ButtonSprite(this, 650, 850);
+            Components.Add(_buttonSprite);
+
             // TODO: Add your initialization logic here
             base.Initialize();
         }
@@ -62,15 +70,25 @@ namespace RobbyVisualizer
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            _eatingCookie = Content.Load<Song>("Sounds/EatingCookie");
+
             // TODO: use this.Content to load your game content here
             base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            if(_cookieMonster.XPosition == _cookie.XPosition && _cookieMonster.YPosition == _cookie.YPosition ){
+                if(_cookie.IsVisible){
+                    MediaPlayer.Play(_eatingCookie);
+                }
+                _cookie.IsVisible = false;
+            }
 
+            if(_buttonSprite.IsClicked){
+                _cookieMonster.Run = true;
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);

@@ -4,7 +4,7 @@ using System;
 
 namespace RobbyVisualizer
 {
-    public class SimulationSprite : DrawableGameComponent
+    public class GridUnitSprite : DrawableGameComponent
     {
         private Game _game;
         private SpriteBatch _spriteBatch;
@@ -13,7 +13,7 @@ namespace RobbyVisualizer
         private int _yPosition;
         private Color _color;
 
-        public SimulationSprite(Game game, int xPosition, int yPosition, Color color) : base(game){
+        public GridUnitSprite(Game game, int xPosition, int yPosition, Color color) : base(game){
             _game = game;
             _xPosition = xPosition;
             _yPosition = yPosition;
