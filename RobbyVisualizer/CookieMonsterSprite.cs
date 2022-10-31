@@ -12,6 +12,16 @@ namespace RobbyVisualizer
         private Game _game;
         private SpriteBatch _spriteBatch;
         private Texture2D _cookieMonsterSprite;
+        private Texture2D _cookieMonsterEatingSprite;
+        private bool _eating;
+        public bool Eating{
+            get{
+                return _eating;
+            }
+            set {
+                _eating = value;
+            }
+        }
         private bool _run;
         public bool Run{
             get{
@@ -43,6 +53,7 @@ namespace RobbyVisualizer
             _xPosition = xPosition;
             _yPosition = yPosition;
             _run = false;
+            _eating = false;
         }
 
         public override void Initialize()
@@ -57,6 +68,7 @@ namespace RobbyVisualizer
 
             // Created keySprite with the keyType (Image name) as the image
             _cookieMonsterSprite = _game.Content.Load<Texture2D>("CookieMonster");
+            _cookieMonsterEatingSprite = _game.Content.Load<Texture2D>("CookieMonsterEating");
 
             base.LoadContent();
         }
@@ -67,19 +79,19 @@ namespace RobbyVisualizer
             _current = Keyboard.GetState();
 
             if(_run){
-                    if (_previous.IsKeyDown(Keys.W) && _current.IsKeyUp(Keys.W) && _yPosition - 78 >= 20) {
-                        _yPosition -= 78;
-                    }
-                    if (_previous.IsKeyDown(Keys.S) && _current.IsKeyUp(Keys.S) && _yPosition + 78 <= 722) {
-                    _yPosition += 78;
-                    }
-                    if (_previous.IsKeyDown(Keys.A) && _current.IsKeyUp(Keys.A) && _xPosition - 78 >= 460) {
-                        _xPosition -= 78;
-                    }
-                    if (_previous.IsKeyDown(Keys.D) && _current.IsKeyUp(Keys.D) && _xPosition + 78 <= 1162) {
-                        _xPosition += 78;
-                    }
-                
+                if (_previous.IsKeyDown(Keys.W) && _current.IsKeyUp(Keys.W) && _yPosition - 78 >= 20) {
+                    _yPosition -= 78;
+                }
+                if (_previous.IsKeyDown(Keys.S) && _current.IsKeyUp(Keys.S) && _yPosition + 78 <= 722) {
+                _yPosition += 78;
+                }
+                if (_previous.IsKeyDown(Keys.A) && _current.IsKeyUp(Keys.A) && _xPosition - 78 >= 460) {
+                    _xPosition -= 78;
+                }
+                if (_previous.IsKeyDown(Keys.D) && _current.IsKeyUp(Keys.D) && _xPosition + 78 <= 1162) {
+                    _xPosition += 78;
+                }
+            
             }
 
             // Calls base Update
@@ -89,7 +101,11 @@ namespace RobbyVisualizer
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_cookieMonsterSprite, new Rectangle(_xPosition, _yPosition, 100, 100), Color.White);
+            if(_eating){
+                _spriteBatch.Draw(_cookieMonsterEatingSprite, new Rectangle(_xPosition, _yPosition, 100, 100), Color.White);
+            } else {
+                _spriteBatch.Draw(_cookieMonsterSprite, new Rectangle(_xPosition, _yPosition, 100, 100), Color.White);
+            }
             _spriteBatch.End();
             base.Draw(gameTime);
         }

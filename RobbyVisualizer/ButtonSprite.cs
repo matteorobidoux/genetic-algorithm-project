@@ -62,7 +62,7 @@ public class ButtonSprite : DrawableGameComponent
     {
         _spriteBatch.Begin();
         _spriteBatch.Draw(_squareSprite, new Rectangle(_xPosition,_yPosition,400,80), Color.White);
-        _spriteBatch.DrawString(_spriteFont, "Select Folder With Proper Data", new Vector2(680, 870), Color.Black);
+        _spriteBatch.DrawString(_spriteFont, "Select Folder With Proper Data", new Vector2(680, 960), Color.Black);
         _spriteBatch.End();
         base.Draw(gameTime);
     }

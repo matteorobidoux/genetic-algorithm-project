@@ -10,7 +10,20 @@ namespace RobbyVisualizer
         private SpriteBatch _spriteBatch;
         private Texture2D _squareSprite;
         private int _xPosition;
+
+        public int XPosition {
+            get {
+                return _xPosition;
+            }
+        }
+
         private int _yPosition;
+
+        public int YPosition {
+            get {
+                return _yPosition;
+            }
+        }
         private Color _color;
 
         public GridUnitSprite(Game game, int xPosition, int yPosition, Color color) : base(game){
