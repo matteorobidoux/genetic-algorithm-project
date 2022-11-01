@@ -50,10 +50,16 @@ namespace GeneticAlgorithm
       {
         throw new ArgumentException($"The length of a gene must be a positive integer. Got: {lengthOfGenes}");
       }
-      _genes = new int[numGenes];
-      _lengthOfGenes = lengthOfGenes;
       _seed = seed;
       _rand = _seed == null ? new Random() : new Random((int)_seed);
+      _lengthOfGenes = lengthOfGenes;
+      _genes = new int[numGenes];
+      for (int i = 0; i < Length; i++)
+      {
+        _genes[i] = _rand.Next(0, _lengthOfGenes);
+      }
+      
+      
     }
 
     public Chromosome(Chromosome original)
