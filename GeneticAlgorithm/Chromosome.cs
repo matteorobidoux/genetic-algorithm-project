@@ -19,7 +19,7 @@ namespace GeneticAlgorithm
         }
         return Genes[index];
       }
-      set
+      internal set
       {
         if (index < 0 || index >= Length) 
         {
@@ -33,13 +33,13 @@ namespace GeneticAlgorithm
       }
     }
 
-    public double Fitness {get; set;}
+    public double Fitness {get; internal set;}
 
     public int[] Genes => _genes;
 
     public long Length => _genes.Length;
 
-    public Chromosome(int numGenes, int lengthOfGenes, int? seed) 
+    internal Chromosome(int numGenes, int lengthOfGenes, int? seed) 
     {
       if(numGenes <= 0) 
       {
@@ -64,7 +64,7 @@ namespace GeneticAlgorithm
       return _seed == null ? new Random() : new Random((int)_seed);
     }
 
-    public Chromosome(Chromosome original)
+    internal Chromosome(Chromosome original)
     {
       _seed = original._seed;
       _lengthOfGenes = original._lengthOfGenes;
@@ -82,6 +82,14 @@ namespace GeneticAlgorithm
 
     public IChromosome[] Reproduce(IChromosome spouse, double mutationProb)
     {
+      if(spouse !is Chromosome || spouse.Length != Length || (spouse as Chromosome)._lengthOfGenes != _lengthOfGenes)
+      {
+        throw new ArgumentException("The spouse is incompatible with this chromosome");
+      }
+      if(mutationProb < 0 || mutationProb > 1)
+      {
+        throw new ArgumentOutOfRangeException($"Invalid mutationProb. Expected value between 0 and 1. Got: {mutationProb}");
+      }
       IChromosome[] children = Crossover(spouse as Chromosome);
       Random rand = GetRandomObj();
       for (int i = 0; i < Length; i++)
