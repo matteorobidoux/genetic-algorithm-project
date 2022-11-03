@@ -8,7 +8,6 @@ namespace GeneticAlgorithm
     private int[] _genes;
     private int _lengthOfGenes;
     private int? _seed;
-    private Random _rand;
 
     public int this[int index]
     {
@@ -51,15 +50,18 @@ namespace GeneticAlgorithm
         throw new ArgumentException($"The length of a gene must be a positive integer. Got: {lengthOfGenes}");
       }
       _seed = seed;
-      _rand = _seed == null ? new Random() : new Random((int)_seed);
+      Random rand = GetRandomObj();
       _lengthOfGenes = lengthOfGenes;
       _genes = new int[numGenes];
       for (int i = 0; i < Length; i++)
       {
-        _genes[i] = _rand.Next(0, _lengthOfGenes);
+        _genes[i] = rand.Next(0, _lengthOfGenes);
       }
-      
-      
+    }
+
+    private Random GetRandomObj()
+    {
+      return _seed == null ? new Random() : new Random((int)_seed);
     }
 
     public Chromosome(Chromosome original)
@@ -68,7 +70,6 @@ namespace GeneticAlgorithm
       _lengthOfGenes = original._lengthOfGenes;
       Array.Copy(original._genes, _genes, original.Length);
       Fitness = original.Fitness;
-      _rand = _seed == null ? new Random() : new Random((int)_seed);
     }
 
     public int CompareTo([AllowNull] IChromosome other)
@@ -88,14 +89,15 @@ namespace GeneticAlgorithm
     public IChromosome[] Reproduce(IChromosome spouse, double mutationProb)
     {
       IChromosome[] children = Crossover(spouse as Chromosome);
+      Random rand = GetRandomObj();
       for (int i = 0; i < Length; i++)
       {
         foreach (var child in children)
         {
-          double prob = _rand.NextDouble();
+          double prob = rand.NextDouble();
           if (prob <= mutationProb)
           {
-            child.Genes[i] = _rand.Next(_lengthOfGenes);
+            child.Genes[i] = rand.Next(_lengthOfGenes);
           }
         }
       }
@@ -104,8 +106,9 @@ namespace GeneticAlgorithm
 
     private Chromosome[] Crossover(Chromosome spouce) 
     {
-      int start = _rand.Next((int)Length);
-      int end = _rand.Next(start, (int)Length);
+      Random rand = GetRandomObj();
+      int start = rand.Next((int)Length);
+      int end = rand.Next(start, (int)Length);
       Chromosome[] children = new Chromosome[]{new Chromosome(this), new Chromosome(spouce)};
       for (int i = start; i < end; i++) {
         int temp = children[0][i];
