@@ -68,6 +68,7 @@ namespace GeneticAlgorithm
     {
       _seed = original._seed;
       _lengthOfGenes = original._lengthOfGenes;
+      _genes = new int[original.Length];
       Array.Copy(original._genes, _genes, original.Length);
       Fitness = original.Fitness;
     }
@@ -76,14 +77,7 @@ namespace GeneticAlgorithm
     {
       if(other == null) return 1;
       if(Fitness == other.Fitness) return 0;
-      if(Fitness > other.Fitness)
-      {
-        return -1;
-      }
-      else
-      {
-        return 1;
-      }
+      return Fitness > other.Fitness? -1 : 1;
     }
 
     public IChromosome[] Reproduce(IChromosome spouse, double mutationProb)
