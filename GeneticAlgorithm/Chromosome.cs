@@ -82,7 +82,7 @@ namespace GeneticAlgorithm
 
     public IChromosome[] Reproduce(IChromosome spouse, double mutationProb)
     {
-      if(spouse !is Chromosome || spouse.Length != Length || (spouse as Chromosome)._lengthOfGenes != _lengthOfGenes)
+      if(!(spouse is Chromosome) || spouse.Length != Length || (spouse as Chromosome)._lengthOfGenes != _lengthOfGenes)
       {
         throw new ArgumentException("The spouse is incompatible with this chromosome");
       }
