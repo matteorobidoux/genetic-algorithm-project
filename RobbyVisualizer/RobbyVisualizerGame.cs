@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace RobbyVisualizer
 {
@@ -67,6 +68,7 @@ namespace RobbyVisualizer
             _buttonSprite = new ButtonSprite(this, 650, 930);
             Components.Add(_buttonSprite);
 
+
             // TODO: Add your initialization logic here
             base.Initialize();
         }
@@ -103,8 +105,11 @@ namespace RobbyVisualizer
             }
 
             if(_buttonSprite.IsClicked){
+                _cookieMonster.Files = _buttonSprite.Files;
                 _cookieMonster.Run = true;
+                _buttonSprite.IsClicked = false;
             }
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);

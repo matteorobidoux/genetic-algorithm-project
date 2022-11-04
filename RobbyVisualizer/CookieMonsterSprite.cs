@@ -1,6 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.IO;
+using System.Threading;
 using System;
 
 namespace RobbyVisualizer
@@ -45,6 +47,16 @@ namespace RobbyVisualizer
                 return _yPosition;
             }
         }
+        private string[] _files;
+        public string[] Files{
+            get{
+                return _files;
+            }
+            set{
+                _files = value;
+            }
+        }
+        private int _timeElapsed;
 
         public CookieMonsterSprite(Game game, int xPosition, int yPosition) : base(game){
             _previous = Keyboard.GetState();
@@ -54,6 +66,7 @@ namespace RobbyVisualizer
             _yPosition = yPosition;
             _run = false;
             _eating = false;
+            _timeElapsed = 0;
         }
 
         public override void Initialize()
@@ -79,19 +92,28 @@ namespace RobbyVisualizer
             _current = Keyboard.GetState();
 
             if(_run){
-                if (_previous.IsKeyDown(Keys.W) && _current.IsKeyUp(Keys.W) && _yPosition - 78 >= 20) {
-                    _yPosition -= 78;
+                for(int i =0; i< _files.Length; i++){
+                    string moves =  System.IO.File.ReadAllText(_files[i]);
+                    for(int j =0; j < moves.Length; j++){
+                        if(_timeElapsed == 600){
+                            if(moves[j] == '1' && _yPosition - 78 >= 20){
+                                _yPosition -= 78;
+                            } else if(moves[j] == '2' && _yPosition + 78 <= 722){
+                                _yPosition += 78;
+                            } else if(moves[j] == '3' && _xPosition - 78 >= 460){
+                                _xPosition -= 78;
+                            } else if(moves[j] == '4' && _xPosition + 78 <= 1162){
+                                _xPosition += 78;
+                            }
+                            if(i == _files.Length-1 && j == moves.Length-1){
+                                _run = false;
+                            }
+                            _timeElapsed = 0;
+                        } else{
+                            _timeElapsed++;
+                        }
+                    }
                 }
-                if (_previous.IsKeyDown(Keys.S) && _current.IsKeyUp(Keys.S) && _yPosition + 78 <= 722) {
-                _yPosition += 78;
-                }
-                if (_previous.IsKeyDown(Keys.A) && _current.IsKeyUp(Keys.A) && _xPosition - 78 >= 460) {
-                    _xPosition -= 78;
-                }
-                if (_previous.IsKeyDown(Keys.D) && _current.IsKeyUp(Keys.D) && _xPosition + 78 <= 1162) {
-                    _xPosition += 78;
-                }
-            
             }
 
             // Calls base Update

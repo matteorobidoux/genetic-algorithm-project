@@ -2,6 +2,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.Windows.Forms;
+using System;
+using System.IO;
 
 public class ButtonSprite : DrawableGameComponent
 {
@@ -14,6 +16,16 @@ public class ButtonSprite : DrawableGameComponent
     public bool IsClicked{
         get{
             return _isClicked;
+        }
+        set{
+            _isClicked = value;
+        }
+    }
+
+    private string[] _files;
+    public string[] Files{
+        get{
+            return _files;
         }
     }
 
@@ -54,6 +66,8 @@ public class ButtonSprite : DrawableGameComponent
                 folderDlg.ShowNewFolderButton = true;   
                 DialogResult result = folderDlg.ShowDialog();
                 _isClicked = true;
+                _files = Directory.GetFiles(folderDlg.SelectedPath);
+                Array.Sort(_files);
             }
         }
     }
