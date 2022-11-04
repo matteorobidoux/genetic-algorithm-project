@@ -2,6 +2,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GeneticAlgorithm\GeneticAlgorithm.csproj" />
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>TestRobbyTheRobot</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <PropertyGroup>
