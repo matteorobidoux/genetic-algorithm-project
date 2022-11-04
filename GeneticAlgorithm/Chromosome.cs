@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System;
+using System.Linq;
 
 namespace GeneticAlgorithm
 {
@@ -35,7 +36,7 @@ namespace GeneticAlgorithm
 
     public double Fitness {get; internal set;}
 
-    public int[] Genes => _genes;
+    public int[] Genes => _genes.ToArray();
 
     public long Length => _genes.Length;
 
@@ -64,13 +65,11 @@ namespace GeneticAlgorithm
       return _seed == null ? new Random() : new Random((int)_seed);
     }
 
-    internal Chromosome(Chromosome original)
+    internal Chromosome(int[] genes, int lengthOfGenes, int? seed)
     {
-      _seed = original._seed;
-      _lengthOfGenes = original._lengthOfGenes;
-      _genes = new int[original.Length];
-      Array.Copy(original._genes, _genes, original.Length);
-      Fitness = original.Fitness;
+      _seed = seed;
+      _lengthOfGenes = lengthOfGenes;
+      _genes = genes.ToArray();
     }
 
     public int CompareTo([AllowNull] IChromosome other)
@@ -90,7 +89,21 @@ namespace GeneticAlgorithm
       {
         throw new ArgumentOutOfRangeException($"Invalid mutationProb. Expected value between 0 and 1. Got: {mutationProb}");
       }
-      IChromosome[] children = Crossover(spouse as Chromosome);
+      Chromosome parent = spouse as Chromosome;
+      Chromosome[] children = new Chromosome[]{new Chromosome(_genes, _lengthOfGenes, _seed), 
+      new Chromosome(parent._genes, parent._lengthOfGenes, parent._seed)};
+      
+      Random rand = GetRandomObj();
+      int start = rand.Next((int)Length);
+      int end = rand.Next(start, (int)Length);
+      Cross(children[0], children[1], start, end);
+      Mutate(children, mutationProb);
+
+      return children;
+    }
+
+    private void Mutate(Chromosome[] children, double mutationProb)
+    {
       Random rand = GetRandomObj();
       for (int i = 0; i < Length; i++)
       {
@@ -103,22 +116,15 @@ namespace GeneticAlgorithm
           }
         }
       }
-      return children;
     }
 
-    private Chromosome[] Crossover(Chromosome spouce) 
+    private void Cross(Chromosome childA, Chromosome childB, int start, int end)
     {
-      Random rand = GetRandomObj();
-      int start = rand.Next((int)Length);
-      int end = rand.Next(start, (int)Length);
-      Chromosome[] children = new Chromosome[]{new Chromosome(this), new Chromosome(spouce)};
-      for (int i = start; i < end; i++) {
-        int temp = children[0][i];
-        children[0][i] = children[1][i];
-        children[1][i] = temp;
+      for (int i = start; i <= end; i++) {
+        int temp = childA[i];
+        childA[i] = childB[i];
+        childB[i] = temp;
       }
-
-      return children;
-    } 
+    }
   }
 }
