@@ -25,7 +25,7 @@ namespace GeneticAlgorithmTests
         public void TestCtorDeepCopy()
         {
             Chromosome c1 = new Chromosome(10,5,0);
-            Chromosome c2 = new Chromosome(c1);
+            Chromosome c2 = new Chromosome(c1.Genes, 5, 0);
             Assert.AreEqual(10,c2.Length);
             int[] expectedGenes = new int[]{3,4,3,2,1,2,4,2,4,1};
             for (int i = 0; i < c2.Length; i++)
@@ -92,8 +92,8 @@ namespace GeneticAlgorithmTests
             Chromosome c2 = new Chromosome(10,5,1);
             int[] c1Genes = new int[]{3,4,3,2,1,2,4,2,4,1};
             int[] c2Genes = new int[]{1,0,2,3,3,2,1,4,0,3};
-            int[] expectedKid1 = new int[]{3,4,3,2,1,2,4,4,0,1};
-            int[] expectedKid2 = new int[]{1,0,2,3,3,2,1,2,4,3};
+            int[] expectedKid1 = new int[]{3,4,3,2,1,2,4,4,0,3};
+            int[] expectedKid2 = new int[]{1,0,2,3,3,2,1,2,4,1};
             IChromosome[] kids = c1.Reproduce(c2, 0);
             Assert.AreEqual(2, kids.Length);
             for (int i = 0; i < c1.Length; i++)
@@ -110,8 +110,8 @@ namespace GeneticAlgorithmTests
             Chromosome c2 = new Chromosome(10,5,1);
             int[] c1Genes = new int[]{3,4,3,2,1,2,4,2,4,1};
             int[] c2Genes = new int[]{1,0,2,3,3,2,1,4,0,3};
-            int[] expectedKid1 = new int[]{3,4,2,4,3,4,4,4,3,1};
-            int[] expectedKid2 = new int[]{1,0,2,1,4,2,4,2,4,3};
+            int[] expectedKid1 = new int[]{3,4,3,2,1,2,4,4,0,3};
+            int[] expectedKid2 = new int[]{1,0,2,3,3,2,1,2,4,1};
             IChromosome[] kids = c1.Reproduce(c2, .5);
             Assert.AreEqual(2, kids.Length);
             for (int i = 0; i < c1.Length; i++)
