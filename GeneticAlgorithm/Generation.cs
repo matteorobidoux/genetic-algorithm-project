@@ -61,14 +61,17 @@ namespace GeneticAlgorithm
     public void EvaluateFitnessOfPopulation()
     {
       double totalFitness = 0;
-      foreach (Chromosome chromosome in _generation)
+      for (int i = 0; i < _alg.NumberOfTrials; i++)
       {
-        double fitness = _fitnessCalc(chromosome, this);
-        chromosome.Fitness = fitness;
-        totalFitness += fitness;
-        if (fitness > MaxFitness)
+        foreach (Chromosome chromosome in _generation)
         {
-          MaxFitness = fitness;
+          double fitness = _fitnessCalc(chromosome, this) / _alg.NumberOfTrials;
+          chromosome.Fitness += fitness;
+          totalFitness += fitness;
+          if (chromosome.Fitness > MaxFitness)
+          {
+            MaxFitness = chromosome.Fitness;
+          }
         }
       }
       AverageFitness = totalFitness/NumberOfChromosomes;
