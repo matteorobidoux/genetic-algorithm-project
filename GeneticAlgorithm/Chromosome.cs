@@ -60,6 +60,10 @@ namespace GeneticAlgorithm
       }
     }
 
+    // <summary>
+    // Makes a Random object, either seeded or not
+    // </summary>
+    // <return>The Random object</return>
     private Random GetRandomObj()
     {
       return _seed == null ? new Random() : new Random((int)_seed);
@@ -102,6 +106,10 @@ namespace GeneticAlgorithm
       return children;
     }
 
+    // <summary>
+    // Given an array of Chromosomes, this will go through each gene of each Chromosome and mutate it
+    // according to the mutation probability
+    // </summary>
     private void Mutate(Chromosome[] children, double mutationProb)
     {
       Random rand = GetRandomObj();
@@ -110,7 +118,7 @@ namespace GeneticAlgorithm
         foreach (var child in children)
         {
           double prob = rand.NextDouble();
-          if (prob <= mutationProb)
+          if (prob < mutationProb)
           {
             child.Genes[i] = rand.Next(_lengthOfGenes);
           }
@@ -118,6 +126,10 @@ namespace GeneticAlgorithm
       }
     }
 
+    // <summary>
+    // Crosses two chromosomes. Given a starting point and an end point, this method will take the genes of the
+    // given chromosomes and swap the genes in the given range.
+    // </summary>
     private void Cross(Chromosome childA, Chromosome childB, int start, int end)
     {
       for (int i = start; i <= end; i++) {
