@@ -8,21 +8,29 @@ namespace GeneticAlgorithm
     private FitnessEventHandler _fitnessCalc;
     private int? _seed;
     private Chromosome[] _generation;
-    public IChromosome this[int index] => throw new System.NotImplementedException();
+    public IChromosome this[int index] 
+    {
+      get
+      {
+        if(index <= 0 || index >= NumberOfChromosomes)
+        {
+          throw new IndexOutOfRangeException($"Invalid index for Generation. Expected between 0 and {NumberOfChromosomes}. Got: {index}");
+        }
+        return _generation[index];
+      }
+    }
 
-    public double AverageFitness => throw new System.NotImplementedException();
+    public double AverageFitness {get; private set;}
 
-    public double MaxFitness => throw new System.NotImplementedException();
-
-    public long NumberOfChromosomes {get;}
+    public double MaxFitness {get; private set;}
+    public long NumberOfChromosomes {get => _generation.Length;}
 
     internal Generation(IGeneticAlgorithm alg, FitnessEventHandler fitnessCalc, int? seed)
     {
       _fitnessCalc = fitnessCalc;
       _seed = seed;
       _alg = alg;
-      NumberOfChromosomes = _alg.PopulationSize;
-      _generation = new Chromosome[NumberOfChromosomes];
+      _generation = new Chromosome[_alg.PopulationSize];
       for (int i = 0; i < NumberOfChromosomes; i++)
       {
         _generation[i] = new Chromosome(_alg.NumberOfGenes, _alg.LengthOfGene, _seed);
@@ -34,8 +42,7 @@ namespace GeneticAlgorithm
       _fitnessCalc = generation._fitnessCalc;
       _seed = generation._seed;
       _alg = generation._alg;
-      NumberOfChromosomes = chromosomes.Length;
-      _generation = new Chromosome[NumberOfChromosomes];
+      _generation = new Chromosome[chromosomes.Length];
       for (int i = 0; i < NumberOfChromosomes; i++)
       {
         _generation[i] = new Chromosome(chromosomes[i].Genes, _alg.LengthOfGene, _seed);
@@ -53,7 +60,19 @@ namespace GeneticAlgorithm
 
     public void EvaluateFitnessOfPopulation()
     {
-      throw new System.NotImplementedException();
+      double totalFitness = 0;
+      foreach (Chromosome chromosome in _generation)
+      {
+        double fitness = _fitnessCalc(chromosome, this);
+        chromosome.Fitness = fitness;
+        totalFitness += fitness;
+        if (fitness > MaxFitness)
+        {
+          MaxFitness = fitness;
+        }
+      }
+      AverageFitness = totalFitness/NumberOfChromosomes;
+      Array.Sort(_generation);
     }
 
     public IChromosome SelectParent()
