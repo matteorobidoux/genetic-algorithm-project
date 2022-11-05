@@ -40,7 +40,7 @@ namespace GeneticAlgorithm
 
     public long Length => _genes.Length;
 
-    internal Chromosome(int numGenes, int lengthOfGenes, int? seed) 
+    internal Chromosome(int numGenes, int lengthOfGenes, int? seed = null) 
     {
       if(numGenes <= 0) 
       {
@@ -65,7 +65,7 @@ namespace GeneticAlgorithm
       return _seed == null ? new Random() : new Random((int)_seed);
     }
 
-    internal Chromosome(int[] genes, int lengthOfGenes, int? seed)
+    internal Chromosome(int[] genes, int lengthOfGenes, int? seed = null)
     {
       _seed = seed;
       _lengthOfGenes = lengthOfGenes;
