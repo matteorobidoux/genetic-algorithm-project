@@ -24,6 +24,29 @@ namespace GeneticAlgorithmTests
       }
     }
 
+    [TestMethod]
+    public void TestCopyCtor()
+    {
+      var alg = new MockAlgorithm(10, 5, 10, 5);
+      Generation g1 = new Generation(alg, MockCalcFitness, 0);
+      IChromosome[] chromes = new Chromosome[alg.PopulationSize];
+      for (int i = 0; i < chromes.Length; i++)
+      {
+        chromes[i] = new Chromosome(alg.NumberOfGenes, alg.LengthOfGene, 0);
+      }
+      Generation g2 = new Generation(chromes, g1);
+
+      int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
+      Assert.AreEqual(10, g2.NumberOfChromosomes);
+      for (int i = 0; i < g2.NumberOfChromosomes; i++)
+      {
+        for (int j = 0; j < g2[i].Length; j++)
+        {
+          Assert.AreEqual(expectedGenes[j], g2[i][j]);
+        }
+      }
+    }
+
     private double MockCalcFitness(IChromosome chromosome, IGeneration generation)
     {
       return chromosome[0];
