@@ -12,7 +12,7 @@ namespace GeneticAlgorithm
     {
       get
       {
-        if(index <= 0 || index >= NumberOfChromosomes)
+        if(index < 0 || index >= NumberOfChromosomes)
         {
           throw new IndexOutOfRangeException($"Invalid index for Generation. Expected between 0 and {NumberOfChromosomes}. Got: {index}");
         }
