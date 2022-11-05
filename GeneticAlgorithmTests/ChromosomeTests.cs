@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace GeneticAlgorithmTests
 {
   [TestClass]
-  public class UnitTest1
+  public class ChromosomeTests
   {
     [TestMethod]
     public void TestCtor()
