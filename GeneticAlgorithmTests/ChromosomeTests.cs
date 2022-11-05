@@ -106,7 +106,7 @@ namespace GeneticAlgorithmTests
       Assert.ThrowsException<ArgumentException>(new Action(delegate { c1.Reproduce(c2, 0); }));
       Assert.ThrowsException<ArgumentException>(new Action(delegate { c1.Reproduce(c3, 0); }));
       //TestChromosome class is at the bottom of the file
-      Assert.ThrowsException<ArgumentException>(new Action(delegate { c1.Reproduce(new TestChromosome(), 0); }));
+      Assert.ThrowsException<ArgumentException>(new Action(delegate { c1.Reproduce(new MockChromosome(), 0); }));
       Assert.ThrowsException<ArgumentOutOfRangeException>(new Action(delegate { c1.Reproduce(c1, -1); }));
       Assert.ThrowsException<ArgumentOutOfRangeException>(new Action(delegate { c1.Reproduce(c1, 2); }));
     }
@@ -181,7 +181,7 @@ namespace GeneticAlgorithmTests
 
     //This class has been made to make sure that only a chromosome can reproduce with another chromosome
     //and not any IChromosome
-    private class TestChromosome : IChromosome
+    private class MockChromosome : IChromosome
     {
       public int this[int index] => throw new NotImplementedException();
 
