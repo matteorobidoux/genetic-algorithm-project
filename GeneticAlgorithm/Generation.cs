@@ -77,7 +77,18 @@ namespace GeneticAlgorithm
 
     public IChromosome SelectParent()
     {
-      throw new System.NotImplementedException();
+      Random rand = GetRandomObj();
+      double pool = rand.NextDouble() * (AverageFitness * NumberOfChromosomes);
+      int index;
+      for (index = 0; index < NumberOfChromosomes; index++)
+      {
+        pool -= _generation[index].Fitness;
+        if (pool <= 0)
+        {
+          break;
+        } 
+      }
+      return _generation[index];
     }
   }
 }
