@@ -47,6 +47,17 @@ namespace GeneticAlgorithmTests
       }
     }
 
+    [TestMethod]
+    public void TestIndexerGet()
+    {
+      var alg = new MockAlgorithm(10, 5, 10, 5);
+      Generation g1 = new Generation(alg, MockCalcFitness, 0);
+      Assert.ThrowsException<IndexOutOfRangeException>(new Action(delegate {var x = g1[-1];}));
+      Assert.ThrowsException<IndexOutOfRangeException>(new Action(delegate {var x = g1[10];}));
+      Assert.IsNotNull(g1[0]);
+      Assert.IsNotNull(g1[9]);
+    }
+
     private double MockCalcFitness(IChromosome chromosome, IGeneration generation)
     {
       return chromosome[0];
