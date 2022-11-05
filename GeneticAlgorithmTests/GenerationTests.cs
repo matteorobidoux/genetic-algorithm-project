@@ -58,6 +58,23 @@ namespace GeneticAlgorithmTests
       Assert.IsNotNull(g1[9]);
     }
 
+    [TestMethod]
+    public void TestEvaluateFitness()
+    {
+      var alg = new MockAlgorithm(10, 5, 10, 5);
+      Generation g1 = new Generation(alg, MockCalcFitness, 0);
+      int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
+      g1.EvaluateFitnessOfPopulation();
+      Assert.AreEqual(3,g1.MaxFitness, 0.000000001);
+      Assert.AreEqual(3,g1.AverageFitness, 0.000000001);
+      Assert.AreEqual(g1.MaxFitness, g1[0].Fitness);
+      for (int i = 0; i < g1.NumberOfChromosomes; i++)
+      {
+        Assert.AreEqual(3, g1[i].Fitness, 0.000000001);
+      }
+    }
+    
+
     private double MockCalcFitness(IChromosome chromosome, IGeneration generation)
     {
       return chromosome[0];
