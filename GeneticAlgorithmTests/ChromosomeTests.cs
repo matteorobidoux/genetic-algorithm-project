@@ -124,8 +124,8 @@ namespace GeneticAlgorithmTests
       Chromosome c2 = new Chromosome(10, 5, 1);
       int[] c1Genes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1 };
       int[] c2Genes = new int[] { 1, 0, 2, 3, 3, 2, 1, 4, 0, 3 };
-      int[] expectedKid1 = new int[] { 3, 4, 3, 2, 1, 2, 4, 4, 0, 3 };
-      int[] expectedKid2 = new int[] { 1, 0, 2, 3, 3, 2, 1, 2, 4, 1 };
+      int[] expectedKid1 = new int[] { 3, 4, 2, 4, 3, 4, 4, 4, 3, 3 };
+      int[] expectedKid2 = new int[] { 1, 0, 2, 1, 4, 2, 4, 2, 4, 1 };
       IChromosome[] kids = c1.Reproduce(c2, .5);
       Assert.AreEqual(2, kids.Length);
       for (int i = 0; i < c1.Length; i++)
