@@ -39,10 +39,22 @@ namespace GeneticAlgorithmTests
       Chromosome c1 = new Chromosome(10, 5, 0);
       Chromosome c2 = new Chromosome(c1.Genes, 5, 0);
       Assert.AreEqual(10, c2.Length);
-      int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1 };
+      int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
       for (int i = 0; i < c2.Length; i++)
       {
-        Assert.AreEqual(c2[i], expectedGenes[i]);
+        Assert.AreEqual(expectedGenes[i], c2[i]);
+      }
+    }
+
+    [TestMethod]
+    public void TestRandomCtorDeepCopy()
+    {
+      Chromosome c1 = new Chromosome(10, 5);
+      Chromosome c2 = new Chromosome(c1.Genes, 5);
+      Assert.AreEqual(10, c2.Length);
+      for (int i = 0; i < c2.Length; i++)
+      {
+        Assert.AreEqual(c1[i], c2[i]);
       }
     }
 
@@ -118,6 +130,22 @@ namespace GeneticAlgorithmTests
     }
 
     [TestMethod]
+    public void TestRandomReproduceNoMutation()
+    {
+      Chromosome c1 = new Chromosome(10, 5);
+      Chromosome c2 = new Chromosome(10, 5);
+      IChromosome[] kids = c1.Reproduce(c2, 0);
+      Assert.AreEqual(2, kids.Length);
+      Assert.AreEqual(10, kids[0].Length);
+      Assert.AreEqual(10, kids[1].Length);
+      for (int i = 0; i < c1.Length; i++)
+      {
+        Assert.AreEqual(2, kids[0][i], 2);
+        Assert.AreEqual(2, kids[1][i], 2);
+      }
+    }
+
+    [TestMethod]
     public void TestReproduceWithMutation()
     {
       Chromosome c1 = new Chromosome(10, 5, 0);
@@ -132,6 +160,22 @@ namespace GeneticAlgorithmTests
       {
         Assert.AreEqual(expectedKid1[i], kids[0][i]);
         Assert.AreEqual(expectedKid2[i], kids[1][i]);
+      }
+    }
+
+    [TestMethod]
+    public void TestRandomReproduceWithMutation()
+    {
+      Chromosome c1 = new Chromosome(10, 5);
+      Chromosome c2 = new Chromosome(10, 5);
+      IChromosome[] kids = c1.Reproduce(c2, .5);
+      Assert.AreEqual(2, kids.Length);
+      Assert.AreEqual(10, kids[0].Length);
+      Assert.AreEqual(10, kids[1].Length);
+      for (int i = 0; i < c1.Length; i++)
+      {
+        Assert.AreEqual(2, kids[0][i], 2);
+        Assert.AreEqual(2, kids[1][i], 2);
       }
     }
 
