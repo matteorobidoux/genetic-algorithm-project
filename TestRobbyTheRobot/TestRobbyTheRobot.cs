@@ -10,7 +10,7 @@ namespace TestRobbyTheRobot
         [TestMethod]
         public void TestGenerateRandomTestGridFiftyFifty()
         {
-            var robby = new RobbyTheRobot.RobbyTheRobot(10, 0, 0, 0);
+            var robby = new RobbyTheRobot.RobbyTheRobot(10, 0, 0, 0, 0, 0, 0);
             var grid = robby.GenerateRandomTestGrid();
             
             int numOfCans = 0;
@@ -28,11 +28,30 @@ namespace TestRobbyTheRobot
                 }
             }
             
-            //Expects 50% from the gridsize
+            //Expects 50% for cans and empty from the gridsize
             int expected = (int) Math.Round(robby.GridSize * robby.GridSize * 0.5);
 
             Assert.AreEqual(expected, numOfCans);
             Assert.AreEqual(expected, numOfEmpties);
+        }
+
+        [TestMethod]
+        public void TestComputeFitness()
+        {
+            var robby = new RobbyTheRobot.RobbyTheRobot(10, 100, 0, 0, 0, 0, 0, 1);
+
+            //generate random list of 243 moves
+            int[] moves = new int[243];
+            Random rand = new Random(1);
+            for (int i = 0; i < moves.Length; i++)
+            {
+                moves[i] = rand.Next(0, 7);
+            }
+
+            double score = robby.ComputeFitness(moves);
+            //Console.WriteLine("FITNESS: " + score);
+
+            Assert.AreEqual(-5, score);
         }
     }
 }

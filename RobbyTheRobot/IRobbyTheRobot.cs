@@ -62,7 +62,8 @@ namespace RobbyTheRobot
 
         /// <summary>
         /// Generates a series of possible solutions based on the generations and saves them to disk.
-        /// The text files generated must contain a comma seperated list of the max score, number of moves to display in the gui and all the actions robby will take (i.e the genes in the Chromosome).
+        /// The text files generated must contain a comma seperated list of the max score, number of moves to display in the gui 
+        /// and all the actions robby will take (i.e the genes in the Chromosome).
         /// The top candidate of the 1st, 20th, 100, 200, 500 and 1000th generation will be saved.
         /// </summary>
         /// <param name="folderPath">The path of the folder where the text files will be saved</param>
