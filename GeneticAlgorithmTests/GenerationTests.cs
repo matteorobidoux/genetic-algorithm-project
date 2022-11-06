@@ -1,7 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using GeneticAlgorithm;
-using System.Diagnostics.CodeAnalysis;
 
 namespace GeneticAlgorithmTests
 {
@@ -17,9 +16,26 @@ namespace GeneticAlgorithmTests
       Assert.AreEqual(10, g1.NumberOfChromosomes);
       for (int i = 0; i < g1.NumberOfChromosomes; i++)
       {
+        Assert.AreEqual(10, g1[i].Length);
         for (int j = 0; j < g1[i].Length; j++)
         {
           Assert.AreEqual(expectedGenes[j], g1[i][j]);
+        }
+      }
+    }
+
+    [TestMethod]
+    public void TestRandomCtor()
+    {
+      var alg = new MockAlgorithm(100, 11, 100, 10);
+      Generation g1 = new Generation(alg, MockCalcFitness);
+      Assert.AreEqual(100, g1.NumberOfChromosomes);
+      for (int i = 0; i < g1.NumberOfChromosomes; i++)
+      {
+        Assert.AreEqual(100, g1[i].Length);
+        for (int j = 0; j < g1[i].Length; j++)
+        {
+          Assert.AreEqual(5, g1[i][j], 5);
         }
       }
     }
@@ -40,9 +56,32 @@ namespace GeneticAlgorithmTests
       Assert.AreEqual(10, g2.NumberOfChromosomes);
       for (int i = 0; i < g2.NumberOfChromosomes; i++)
       {
+        Assert.AreEqual(10, g1[i].Length);
         for (int j = 0; j < g2[i].Length; j++)
         {
           Assert.AreEqual(expectedGenes[j], g2[i][j]);
+        }
+      }
+    }
+
+    [TestMethod]
+    public void TestRandomCopyCtor()
+    {
+      var alg = new MockAlgorithm(100, 11, 100, 10);
+      Generation g1 = new Generation(alg, MockCalcFitness);
+      IChromosome[] chromes = new Chromosome[alg.PopulationSize];
+      for (int i = 0; i < chromes.Length; i++)
+      {
+        chromes[i] = new Chromosome(alg.NumberOfGenes, alg.LengthOfGene);
+      }
+      Generation g2 = new Generation(chromes, g1);
+      Assert.AreEqual(100, g2.NumberOfChromosomes);
+      for (int i = 0; i < g2.NumberOfChromosomes; i++)
+      {
+        Assert.AreEqual(100, g2[i].Length);
+        for (int j = 0; j < g2[i].Length; j++)
+        {
+          Assert.AreEqual(5, g2[i][j], 5);
         }
       }
     }
@@ -75,6 +114,21 @@ namespace GeneticAlgorithmTests
     }
 
     [TestMethod]
+    public void TestRandomEvaluateFitness()
+    {
+      var alg = new MockAlgorithm(100, 11, 100, 10);
+      Generation g1 = new Generation(alg, MockCalcFitness);
+      g1.EvaluateFitnessOfPopulation();
+      Assert.AreEqual(5,g1.MaxFitness, 5);
+      Assert.AreEqual(5,g1.AverageFitness, 5);
+      Assert.AreEqual(g1.MaxFitness, g1[0].Fitness);
+      for (int i = 0; i < g1.NumberOfChromosomes; i++)
+      {
+        Assert.AreEqual(5, g1[i].Fitness, 5);
+      }
+    }
+
+    [TestMethod]
     public void TestSelectParent()
     {
       var alg = new MockAlgorithm(10, 5, 10, 5);
@@ -82,6 +136,15 @@ namespace GeneticAlgorithmTests
       int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
       g1.EvaluateFitnessOfPopulation();
       Assert.AreEqual(g1[7], g1.SelectParent());
+    }
+
+    [TestMethod]
+    public void TestRandomSelectParent()
+    {
+      var alg = new MockAlgorithm(10, 5, 10, 10);
+      Generation g1 = new Generation(alg, MockCalcFitness);
+      g1.EvaluateFitnessOfPopulation();
+      Assert.IsTrue(g1.SelectParent() is Chromosome);
     }
     
 
