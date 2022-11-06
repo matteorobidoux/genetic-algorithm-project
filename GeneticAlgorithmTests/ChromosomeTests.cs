@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace GeneticAlgorithmTests
 {
   [TestClass]
-  public class UnitTest1
+  public class ChromosomeTests
   {
     [TestMethod]
     public void TestCtor()
@@ -39,10 +39,22 @@ namespace GeneticAlgorithmTests
       Chromosome c1 = new Chromosome(10, 5, 0);
       Chromosome c2 = new Chromosome(c1.Genes, 5, 0);
       Assert.AreEqual(10, c2.Length);
-      int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1 };
+      int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
       for (int i = 0; i < c2.Length; i++)
       {
-        Assert.AreEqual(c2[i], expectedGenes[i]);
+        Assert.AreEqual(expectedGenes[i], c2[i]);
+      }
+    }
+
+    [TestMethod]
+    public void TestRandomCtorDeepCopy()
+    {
+      Chromosome c1 = new Chromosome(10, 5);
+      Chromosome c2 = new Chromosome(c1.Genes, 5);
+      Assert.AreEqual(10, c2.Length);
+      for (int i = 0; i < c2.Length; i++)
+      {
+        Assert.AreEqual(c1[i], c2[i]);
       }
     }
 
@@ -94,7 +106,7 @@ namespace GeneticAlgorithmTests
       Assert.ThrowsException<ArgumentException>(new Action(delegate { c1.Reproduce(c2, 0); }));
       Assert.ThrowsException<ArgumentException>(new Action(delegate { c1.Reproduce(c3, 0); }));
       //TestChromosome class is at the bottom of the file
-      Assert.ThrowsException<ArgumentException>(new Action(delegate { c1.Reproduce(new TestChromosome(), 0); }));
+      Assert.ThrowsException<ArgumentException>(new Action(delegate { c1.Reproduce(new MockChromosome(), 0); }));
       Assert.ThrowsException<ArgumentOutOfRangeException>(new Action(delegate { c1.Reproduce(c1, -1); }));
       Assert.ThrowsException<ArgumentOutOfRangeException>(new Action(delegate { c1.Reproduce(c1, 2); }));
     }
@@ -118,14 +130,30 @@ namespace GeneticAlgorithmTests
     }
 
     [TestMethod]
+    public void TestRandomReproduceNoMutation()
+    {
+      Chromosome c1 = new Chromosome(10, 5);
+      Chromosome c2 = new Chromosome(10, 5);
+      IChromosome[] kids = c1.Reproduce(c2, 0);
+      Assert.AreEqual(2, kids.Length);
+      Assert.AreEqual(10, kids[0].Length);
+      Assert.AreEqual(10, kids[1].Length);
+      for (int i = 0; i < c1.Length; i++)
+      {
+        Assert.AreEqual(2, kids[0][i], 2);
+        Assert.AreEqual(2, kids[1][i], 2);
+      }
+    }
+
+    [TestMethod]
     public void TestReproduceWithMutation()
     {
       Chromosome c1 = new Chromosome(10, 5, 0);
       Chromosome c2 = new Chromosome(10, 5, 1);
       int[] c1Genes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1 };
       int[] c2Genes = new int[] { 1, 0, 2, 3, 3, 2, 1, 4, 0, 3 };
-      int[] expectedKid1 = new int[] { 3, 4, 3, 2, 1, 2, 4, 4, 0, 3 };
-      int[] expectedKid2 = new int[] { 1, 0, 2, 3, 3, 2, 1, 2, 4, 1 };
+      int[] expectedKid1 = new int[] { 3, 4, 2, 4, 3, 4, 4, 4, 3, 3 };
+      int[] expectedKid2 = new int[] { 1, 0, 2, 1, 4, 2, 4, 2, 4, 1 };
       IChromosome[] kids = c1.Reproduce(c2, .5);
       Assert.AreEqual(2, kids.Length);
       for (int i = 0; i < c1.Length; i++)
@@ -135,9 +163,25 @@ namespace GeneticAlgorithmTests
       }
     }
 
+    [TestMethod]
+    public void TestRandomReproduceWithMutation()
+    {
+      Chromosome c1 = new Chromosome(10, 5);
+      Chromosome c2 = new Chromosome(10, 5);
+      IChromosome[] kids = c1.Reproduce(c2, .5);
+      Assert.AreEqual(2, kids.Length);
+      Assert.AreEqual(10, kids[0].Length);
+      Assert.AreEqual(10, kids[1].Length);
+      for (int i = 0; i < c1.Length; i++)
+      {
+        Assert.AreEqual(2, kids[0][i], 2);
+        Assert.AreEqual(2, kids[1][i], 2);
+      }
+    }
+
     //This class has been made to make sure that only a chromosome can reproduce with another chromosome
     //and not any IChromosome
-    private class TestChromosome : IChromosome
+    private class MockChromosome : IChromosome
     {
       public int this[int index] => throw new NotImplementedException();
 

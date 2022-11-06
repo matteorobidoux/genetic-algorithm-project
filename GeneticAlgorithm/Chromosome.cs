@@ -120,7 +120,7 @@ namespace GeneticAlgorithm
           double prob = rand.NextDouble();
           if (prob < mutationProb)
           {
-            child.Genes[i] = rand.Next(_lengthOfGenes);
+            child._genes[i] = rand.Next(_lengthOfGenes);
           }
         }
       }
