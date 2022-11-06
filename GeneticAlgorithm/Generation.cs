@@ -25,7 +25,7 @@ namespace GeneticAlgorithm
     public double MaxFitness {get; private set;}
     public long NumberOfChromosomes {get => _generation.Length;}
 
-    internal Generation(IGeneticAlgorithm alg, FitnessEventHandler fitnessCalc, int? seed)
+    internal Generation(IGeneticAlgorithm alg, FitnessEventHandler fitnessCalc, int? seed = null)
     {
       _fitnessCalc = fitnessCalc;
       _seed = seed;
