@@ -54,8 +54,8 @@ namespace GeneticAlgorithmTests
       Generation g1 = new Generation(alg, MockCalcFitness, 0);
       Assert.ThrowsException<IndexOutOfRangeException>(new Action(delegate {var x = g1[-1];}));
       Assert.ThrowsException<IndexOutOfRangeException>(new Action(delegate {var x = g1[10];}));
-      Assert.IsNotNull(g1[0]);
-      Assert.IsNotNull(g1[9]);
+      Assert.IsTrue(g1[0] is Chromosome);
+      Assert.IsTrue(g1[9] is Chromosome);
     }
 
     [TestMethod]
@@ -72,6 +72,16 @@ namespace GeneticAlgorithmTests
       {
         Assert.AreEqual(3, g1[i].Fitness, 0.000000001);
       }
+    }
+
+    [TestMethod]
+    public void TestSelectParent()
+    {
+      var alg = new MockAlgorithm(10, 5, 10, 5);
+      Generation g1 = new Generation(alg, MockCalcFitness, 0);
+      int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
+      g1.EvaluateFitnessOfPopulation();
+      Assert.AreEqual(g1[7], g1.SelectParent());
     }
     
 
