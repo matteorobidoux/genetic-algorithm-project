@@ -31,6 +31,26 @@ namespace GeneticAlgorithm
     internal GeneticAlgorithm(int populationSize, int numberOfGenes, int lengthOfGenes, double mutationRate,
      double eliteRate, int numberOfTrials, FitnessEventHandler calcFunction, int? seed = null) 
     {
+      if (populationSize < 10)
+      {
+        throw new ArgumentOutOfRangeException($"Population minimum is 10. Got: {populationSize}");
+      }
+      if (eliteRate < 0 || eliteRate > 1)
+      {
+        throw new ArgumentOutOfRangeException($"Elite rate expected between 0 and 1. Got: {eliteRate}");
+      }
+      if (mutationRate < 0 || mutationRate > 1)
+      {
+        throw new ArgumentOutOfRangeException($"Mutation rate expected between 0 and 1. Got: {mutationRate}");
+      }
+      if (numberOfTrials <= 0)
+      {
+        throw new ArgumentOutOfRangeException($"Minimum number of trials is 1. Got: {numberOfTrials}");
+      }
+      if (calcFunction == null)
+      {
+        throw new ArgumentNullException($"The fitness calculation delegate cannot be null");
+      }
       PopulationSize = populationSize;
       NumberOfGenes = numberOfGenes;
       LengthOfGene = lengthOfGenes;
