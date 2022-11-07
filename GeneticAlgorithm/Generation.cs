@@ -27,6 +27,14 @@ namespace GeneticAlgorithm
 
     internal Generation(IGeneticAlgorithm alg, FitnessEventHandler fitnessCalc, int? seed = null)
     {
+      if (alg == null)
+      {
+        throw new ArgumentNullException("The algorithm that the generation uses cannot be null");
+      }
+      if (fitnessCalc == null)
+      {
+        throw new ArgumentNullException($"The fitness calculation delegate cannot be null");
+      }
       _fitnessCalc = fitnessCalc;
       _seed = seed;
       _alg = alg;
@@ -39,6 +47,14 @@ namespace GeneticAlgorithm
 
     internal Generation(IChromosome[] chromosomes, Generation generation)
     {
+      if (chromosomes == null)
+      {
+        throw new ArgumentNullException($"The chromosomes of the generation cannot be null");
+      }
+      if (generation == null)
+      {
+        throw new ArgumentNullException($"The generation cannot be null");
+      }
       _fitnessCalc = generation._fitnessCalc;
       _seed = generation._seed;
       _alg = generation._alg;
