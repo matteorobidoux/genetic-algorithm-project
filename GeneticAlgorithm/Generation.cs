@@ -47,6 +47,7 @@ namespace GeneticAlgorithm
 
     internal Generation(IChromosome[] chromosomes, Generation generation)
     {
+      //TODO: Add a check to see if the input chromosomes follow the specifications of the generation
       if (chromosomes == null)
       {
         throw new ArgumentNullException($"The chromosomes of the generation cannot be null");
