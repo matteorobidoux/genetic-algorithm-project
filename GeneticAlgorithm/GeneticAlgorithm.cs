@@ -8,6 +8,8 @@ namespace GeneticAlgorithm
     private long _generationCount;
     private FitnessEventHandler _fitnessCalc;
     private Generation _currentGeneration;
+    private int _eliteNum;
+    private int _elites;
     public int PopulationSize {get;}
 
     public int NumberOfGenes {get;}
@@ -38,6 +40,13 @@ namespace GeneticAlgorithm
       _generationCount = 0;
       _fitnessCalc = calcFunction;
       _seed = seed;
+
+      _eliteNum = (int)Math.Ceiling(eliteRate * populationSize);
+      if (_eliteNum % 2 != 0)
+      {
+        _eliteNum--;
+      }
+      
     }
 
     public IGeneration GenerateGeneration()
@@ -51,12 +60,31 @@ namespace GeneticAlgorithm
         _currentGeneration = GenerateNextGeneration();
       }
       _generationCount++;
+      _currentGeneration.EvaluateFitnessOfPopulation();
       return _currentGeneration;
     }
 
     private Generation GenerateNextGeneration()
     {
-      throw new NotImplementedException();
+      Random rand = _seed == null ? new Random() : new Random((int)_seed);
+      IChromosome[] elites = new IChromosome[_eliteNum];
+      IChromosome[] nextGeneration = new IChromosome[PopulationSize];
+      for (int i = 0; i < elites.Length; i++)
+      {
+        IChromosome elite = _currentGeneration.SelectParent();
+        elites[i] = elite;
+        nextGeneration[i] = elite;
+      }
+      for (int i = elites.Length; i < PopulationSize - 1; i += 2)
+      {
+        int parent1 = rand.Next(elites.Length);
+        int parent2 = rand.Next(elites.Length);
+        IChromosome[] children = elites[parent1].Reproduce(elites[parent2], MutationRate);
+        nextGeneration[i] = children[0];
+        nextGeneration[i + 1] = children[1];
+      }
+
+      return new Generation(nextGeneration, _currentGeneration);
     }
   }
 }
