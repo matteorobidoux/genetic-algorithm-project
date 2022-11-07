@@ -1,28 +1,62 @@
+using System;
+
 namespace GeneticAlgorithm
 {
   class GeneticAlgorithm : IGeneticAlgorithm
   {
-    public int PopulationSize => throw new System.NotImplementedException();
+    private int? _seed;
+    private long _generationCount;
+    private FitnessEventHandler _fitnessCalc;
+    private Generation _currentGeneration;
+    public int PopulationSize {get;}
 
-    public int NumberOfGenes => throw new System.NotImplementedException();
+    public int NumberOfGenes {get;}
 
-    public int LengthOfGene => throw new System.NotImplementedException();
+    public int LengthOfGene {get;}
 
-    public double MutationRate => throw new System.NotImplementedException();
+    public double MutationRate {get;}
 
-    public double EliteRate => throw new System.NotImplementedException();
+    public double EliteRate {get;}
 
-    public int NumberOfTrials => throw new System.NotImplementedException();
+    public int NumberOfTrials {get;}
 
-    public long GenerationCount => throw new System.NotImplementedException();
+    public long GenerationCount {get => _generationCount;}
 
-    public IGeneration CurrentGeneration => throw new System.NotImplementedException();
+    public IGeneration CurrentGeneration {get => _currentGeneration;}
 
-    public FitnessEventHandler FitnessCalculation => throw new System.NotImplementedException();
+    public FitnessEventHandler FitnessCalculation {get => _fitnessCalc;}
+
+    internal GeneticAlgorithm(int populationSize, int numberOfGenes, int lengthOfGenes, double mutationRate,
+     double eliteRate, int numberOfTrials, FitnessEventHandler calcFunction, int? seed = null) 
+    {
+      PopulationSize = populationSize;
+      NumberOfGenes = numberOfGenes;
+      LengthOfGene = lengthOfGenes;
+      MutationRate = mutationRate;
+      EliteRate = eliteRate;
+      NumberOfTrials = numberOfTrials;
+      _generationCount = 0;
+      _fitnessCalc = calcFunction;
+      _seed = seed;
+    }
 
     public IGeneration GenerateGeneration()
     {
-      throw new System.NotImplementedException();
+      if (_currentGeneration == null)
+      {
+        _currentGeneration = new Generation(this, _fitnessCalc, _seed);
+      }
+      else
+      {
+        _currentGeneration = GenerateNextGeneration();
+      }
+      _generationCount++;
+      return _currentGeneration;
+    }
+
+    private Generation GenerateNextGeneration()
+    {
+      throw new NotImplementedException();
     }
   }
 }
