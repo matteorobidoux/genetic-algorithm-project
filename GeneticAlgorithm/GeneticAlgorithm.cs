@@ -9,7 +9,6 @@ namespace GeneticAlgorithm
     private FitnessEventHandler _fitnessCalc;
     private Generation _currentGeneration;
     private int _eliteNum;
-    private int _elites;
     public int PopulationSize {get;}
 
     public int NumberOfGenes {get;}
@@ -100,8 +99,8 @@ namespace GeneticAlgorithm
     private Generation GenerateNextGeneration()
     {
       Random rand = _seed == null ? new Random() : new Random((int)_seed);
-      IChromosome[] elites = new IChromosome[_eliteNum];
-      IChromosome[] nextGeneration = new IChromosome[PopulationSize];
+      IChromosome[] elites = new Chromosome[_eliteNum];
+      IChromosome[] nextGeneration = new Chromosome[PopulationSize];
       for (int i = 0; i < elites.Length; i++)
       {
         elites[i] = _currentGeneration[i];
@@ -112,9 +111,15 @@ namespace GeneticAlgorithm
       {
         IChromosome parent1 = eliteGen.SelectParent();
         IChromosome parent2;
+        int tries = 0;
         do 
         {
           parent2 = eliteGen.SelectParent();
+          tries++;
+          if (tries >= 100)
+          {
+            break;
+          }
         }
         while(parent1 == parent2);
         IChromosome[] children = parent1.Reproduce(parent2, MutationRate);
