@@ -104,15 +104,20 @@ namespace GeneticAlgorithm
       IChromosome[] nextGeneration = new IChromosome[PopulationSize];
       for (int i = 0; i < elites.Length; i++)
       {
-        IChromosome elite = _currentGeneration.SelectParent();
-        elites[i] = elite;
-        nextGeneration[i] = elite;
+        elites[i] = _currentGeneration[i];
+        nextGeneration[i] = _currentGeneration[i];
       }
+      Generation eliteGen = new Generation(elites, _currentGeneration);
       for (int i = elites.Length; i < PopulationSize - 1; i += 2)
       {
-        int parent1 = rand.Next(elites.Length);
-        int parent2 = rand.Next(elites.Length);
-        IChromosome[] children = elites[parent1].Reproduce(elites[parent2], MutationRate);
+        IChromosome parent1 = eliteGen.SelectParent();
+        IChromosome parent2;
+        do 
+        {
+          parent2 = eliteGen.SelectParent();
+        }
+        while(parent1 == parent2);
+        IChromosome[] children = parent1.Reproduce(parent2, MutationRate);
         nextGeneration[i] = children[0];
         nextGeneration[i + 1] = children[1];
       }
