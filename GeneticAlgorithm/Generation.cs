@@ -84,6 +84,10 @@ namespace GeneticAlgorithm
         foreach (Chromosome chromosome in _generation)
         {
           double fitness = _fitnessCalc(chromosome, this) / _alg.NumberOfTrials;
+          //reset the fitness if a fitness already exists
+          if (i == 0) {
+            chromosome.Fitness = 0;
+          }
           chromosome.Fitness += fitness;
           totalFitness += fitness;
           if (chromosome.Fitness > MaxFitness)
