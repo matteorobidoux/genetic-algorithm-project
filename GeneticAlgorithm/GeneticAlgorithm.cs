@@ -47,6 +47,10 @@ namespace GeneticAlgorithm
       {
         throw new ArgumentOutOfRangeException($"Elite rate expected between 0 and 1. Got: {eliteRate}");
       }
+      if (populationSize % 2 == 0 && eliteRate * populationSize < 2 || populationSize % 2 == 1 && eliteRate * populationSize < 3)
+      {
+        throw new ArgumentOutOfRangeException($"Elite rate must provide at least 2 or 3 parents depending on the population size");
+      }
       if (mutationRate < 0 || mutationRate > 1)
       {
         throw new ArgumentOutOfRangeException($"Mutation rate expected between 0 and 1. Got: {mutationRate}");
@@ -70,7 +74,8 @@ namespace GeneticAlgorithm
       _seed = seed;
 
       _eliteNum = (int)Math.Ceiling(eliteRate * populationSize);
-      if (_eliteNum % 2 != 0)
+      //Want to leave room for 2 children being added to the new population
+      if (_eliteNum % 2 != populationSize % 2)
       {
         _eliteNum--;
       }
