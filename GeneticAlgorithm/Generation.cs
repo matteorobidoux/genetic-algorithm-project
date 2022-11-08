@@ -52,6 +52,10 @@ namespace GeneticAlgorithm
       {
         throw new ArgumentNullException($"The chromosomes of the generation cannot be null");
       }
+      if (!(chromosomes is Chromosome[]))
+      {
+        throw new ArgumentException($"Chromosome array must be of type Chromosome[]");
+      }
       if (generation == null)
       {
         throw new ArgumentNullException($"The generation cannot be null");
@@ -59,11 +63,8 @@ namespace GeneticAlgorithm
       _fitnessCalc = generation._fitnessCalc;
       _seed = generation._seed;
       _alg = generation._alg;
-      _generation = new Chromosome[chromosomes.Length];
-      for (int i = 0; i < NumberOfChromosomes; i++)
-      {
-        _generation[i] = new Chromosome(chromosomes[i].Genes, _alg.LengthOfGene, _seed);
-      }
+      _generation = chromosomes as Chromosome[];
+      
     }
 
     // <summary>
