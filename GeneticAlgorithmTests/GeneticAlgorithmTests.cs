@@ -133,7 +133,7 @@ namespace GeneticAlgorithmTests
     [TestMethod]
     public void TestRandomGenerateGenerationMultipleEvenPop()
     {
-      var alg = new GeneticAlgorithm.GeneticAlgorithm(10, 10, 5, .5, .5, 5, MockCalcFitness);
+      var alg = new GeneticAlgorithm.GeneticAlgorithm(10, 10, 5, .5, .4, 5, MockCalcFitness);
       alg.GenerateGeneration();
       alg.GenerateGeneration();
       Assert.AreEqual(2, alg.GenerationCount);
