@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using GeneticAlgorithm;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GeneticAlgorithmTests
 {
@@ -55,6 +56,7 @@ namespace GeneticAlgorithmTests
 
       Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(null, g1);});
       Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(new Chromosome[10], null);});
+      Assert.ThrowsException<ArgumentException>(() => {new Generation(new MockChromosome[10], g1);});
       Generation g2 = new Generation(chromes, g1);
 
       int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
@@ -156,6 +158,27 @@ namespace GeneticAlgorithmTests
     private double MockCalcFitness(IChromosome chromosome, IGeneration generation)
     {
       return chromosome[0];
+    }
+
+    private class MockChromosome : IChromosome
+    {
+      public int this[int index] => throw new NotImplementedException();
+
+      public double Fitness => throw new NotImplementedException();
+
+      public int[] Genes => throw new NotImplementedException();
+
+      public long Length => throw new NotImplementedException();
+
+      public int CompareTo([AllowNull] IChromosome other)
+      {
+        throw new NotImplementedException();
+      }
+
+      public IChromosome[] Reproduce(IChromosome spouse, double mutationProb)
+      {
+        throw new NotImplementedException();
+      }
     }
 
     private class MockAlgorithm : IGeneticAlgorithm
