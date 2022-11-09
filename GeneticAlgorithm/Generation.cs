@@ -64,7 +64,10 @@ namespace GeneticAlgorithm
       _seed = generation._seed;
       _alg = generation._alg;
       _generation = chromosomes as Chromosome[];
-      
+      foreach (var chromosome in chromosomes)
+      {
+        AverageFitness += chromosome.Fitness/chromosomes.Length;
+      }
     }
 
     // <summary>

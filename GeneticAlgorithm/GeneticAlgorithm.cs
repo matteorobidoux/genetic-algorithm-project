@@ -96,6 +96,10 @@ namespace GeneticAlgorithm
       return _currentGeneration;
     }
 
+    /// <summary>
+    /// Generates a new generation based on the previous generation and the elite rate
+    /// </summary>
+    /// <return> The newly generated generation </return>
     private Generation GenerateNextGeneration()
     {
       Random rand = _seed == null ? new Random() : new Random((int)_seed);
@@ -111,17 +115,11 @@ namespace GeneticAlgorithm
       {
         IChromosome parent1 = eliteGen.SelectParent();
         IChromosome parent2;
-        int tries = 0;
         do 
         {
           parent2 = eliteGen.SelectParent();
-          tries++;
-          if (tries >= 100)
-          {
-            break;
-          }
         }
-        while(parent1 == parent2);
+        while(_seed == null && parent1 == parent2);
         IChromosome[] children = parent1.Reproduce(parent2, MutationRate);
         nextGeneration[i] = children[0];
         nextGeneration[i + 1] = children[1];
