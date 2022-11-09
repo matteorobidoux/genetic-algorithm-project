@@ -105,6 +105,8 @@ namespace GeneticAlgorithm
 
     public IChromosome SelectParent()
     {
+      //Could have a problem/crash if the fitnesses are all negative, or the average is 0
+      //If the average is positive and there are some negatives, then they will never be chosen
       Random rand = GetRandomObj();
       double pool = rand.NextDouble() * (AverageFitness * NumberOfChromosomes);
       int index;
@@ -116,7 +118,7 @@ namespace GeneticAlgorithm
           break;
         } 
       }
-      return _generation[index];
+      return _generation[index - 1];
     }
   }
 }
