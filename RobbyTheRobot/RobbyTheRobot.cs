@@ -98,13 +98,13 @@ namespace RobbyTheRobot
             return grid;
         }
 
-        /// <summary>
+        /// <summary> TO-DO
         /// This function computes the fitness of a chromosome for a given random 
         /// of TestGrid. It then computes the score and returns a double.
         /// </summary>
         /// <param name="moves">IChoromosome, containing gene list of 243 moves</param>
         /// <returns>Fitness score for the given chromosome</returns>
-        public double ComputeFitness(IChromosome chromosome)
+        public double ComputeFitness(IChromosome chromosome, IGeneration generation)
         {
             Random rand = GenerateRandom();
 
@@ -114,6 +114,25 @@ namespace RobbyTheRobot
 
             testGrid = GenerateRandomTestGrid();
             double score = RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
+
+            return score;
+        }
+
+        /// <summary>
+        /// Testing function of ComputeFitness() that only takes a random gene.
+        /// </summary>
+        /// <param name="moves">Gene array of moves</param>
+        /// <returns>Fitness score for the given gene</returns>
+        public double ComputeFitness(int[] moves)
+        {
+            Random rand = GenerateRandom();
+
+            ContentsOfGrid[,] testGrid;
+            int posX = 0;
+            int posY = 0;
+
+            testGrid = GenerateRandomTestGrid();
+            double score = RobbyHelper.ScoreForAllele(moves, testGrid, rand, ref posX, ref posY);
 
             return score;
         }

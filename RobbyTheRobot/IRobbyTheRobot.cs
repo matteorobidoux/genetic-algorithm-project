@@ -68,6 +68,8 @@ namespace RobbyTheRobot
         /// </summary>
         /// <param name="folderPath">The path of the folder where the text files will be saved</param>
         void GeneratePossibleSolutions(string folderPath);
+        double ComputeFitness(int[] moves);
+        double ComputeFitness(IChromosome chromosome, IGeneration generation);
 
         /// <summary>
         /// An event raised when a file is written to disk
