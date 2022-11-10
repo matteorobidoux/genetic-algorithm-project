@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GeneticAlgorithm;
 
 namespace RobbyTheRobot
 {
@@ -98,32 +99,23 @@ namespace RobbyTheRobot
         }
 
         /// <summary>
-        /// This function computes the fitness of a chromosome for a given amount 
-        /// of TestGrids. It then computes the average score and returns a double.
+        /// This function computes the fitness of a chromosome for a given random 
+        /// of TestGrid. It then computes the score and returns a double.
         /// </summary>
-        /// <param name="moves">The list of 243 moves</param>
+        /// <param name="moves">IChoromosome, containing gene list of 243 moves</param>
         /// <returns>Fitness score for the given chromosome</returns>
-        public double ComputeFitness(int[] moves)
+        public double ComputeFitness(IChromosome chromosome)
         {
             Random rand = GenerateRandom();
 
             ContentsOfGrid[,] testGrid;
-            double score = 0;
-            int counter = 0;
-            
-            while(counter < NumberOfTestGrids)
-            {
-                int posX = 0;
-                int posY = 0;
+            int posX = 0;
+            int posY = 0;
 
-                testGrid = GenerateRandomTestGrid();
-                score += RobbyHelper.ScoreForAllele(moves, testGrid, rand, ref posX, ref posY);
-                counter++;
-            }
+            testGrid = GenerateRandomTestGrid();
+            double score = RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
 
-            double averageScore = score / NumberOfTestGrids;
-
-            return averageScore;
+            return score;
         }
 
         /// <summary>

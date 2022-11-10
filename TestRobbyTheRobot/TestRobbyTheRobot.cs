@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RobbyTheRobot;
 using System;
+using GeneticAlgorithm;
 
 namespace TestRobbyTheRobot
 {
@@ -47,6 +48,8 @@ namespace TestRobbyTheRobot
             {
                 moves[i] = rand.Next(0, 7);
             }
+
+            ICh
 
             double score = robby.ComputeFitness(moves);
             //Console.WriteLine("FITNESS: " + score);
