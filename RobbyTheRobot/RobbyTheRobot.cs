@@ -1,34 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
 using GeneticAlgorithm;
 
 namespace RobbyTheRobot
 {
     internal class RobbyTheRobot : IRobbyTheRobot
     {
-        private int _numberOfGenerations;
-        private int _populationSize;
+        private int _numberOfActions; // number of moves robby can do (200)
+        private int _numberOfTestGrids; //number of test grids to generate
+        private int _gridSize; // size of one dimension of the grid
+        private int _numberOfGenerations; // number of generations
+        private double _mutationRate; //??
+        private double _eliteRate; //??
+        private int _populationSize; // number of chromosomes initially (200)
         private int _numberOfTrials; // The number of times the fitness function should be called when computing the result
-        private int? _potentialSeed;
-        private int _numberOfActions;
-        private int _numberOfTestGrids;
-        private double _mutationRate;
-        private double _eliteRate;
-        private int _gridSize;
-        public int NumberOfActions => throw new NotImplementedException(); //steps for robby
+        private int? _potentialSeed; // for making random predictable
+        public int NumberOfActions {get => _numberOfActions;} //steps for robby
         public int NumberOfTestGrids {get => _numberOfTestGrids;} //decide myself
         public int GridSize {get => _gridSize;} //constant 10
         public int NumberOfGenerations {get => _numberOfGenerations;} //set in constructor, by user
         public double MutationRate {get => _mutationRate;} //set in constructor, by user 
         public double EliteRate {get => _eliteRate;} //set in constructor, by user
-
-        public RobbyTheRobot(int gridSize, int numberOfTestGrids, int mutationRate, int eliteRate, int numberOfGenerations, int populationSize, int numberOfTrials, int? potentialSeed = null)
+        internal RobbyTheRobot(int numberOfActions,
+                               int numberOfTestGrids,
+                               int gridSize,
+                               int numberOfGenerations,
+                               double mutationRate,
+                               double eliteRate,
+                               int populationSize,
+                               int numberOfTrials,
+                               int? potentialSeed = null)
         {
-            _gridSize = gridSize;
+            _numberOfActions = numberOfActions;
             _numberOfTestGrids = numberOfTestGrids;
+            _gridSize = gridSize;
+            _numberOfGenerations = numberOfGenerations;
             _mutationRate = mutationRate;
             _eliteRate = eliteRate;
-            _numberOfGenerations = numberOfGenerations;
             _populationSize = populationSize;
             _numberOfTrials = numberOfTrials;
 
@@ -40,7 +47,16 @@ namespace RobbyTheRobot
 
         public void GeneratePossibleSolutions(string folderPath)
         {
-            throw new NotImplementedException();
+            var genAlg = GeneticLib.CreateGeneticAlgorithm(_populationSize, 7, 243, 404, 404, _numberOfTrials, ComputeFitness, 1);
+            IGeneration currentGen;
+
+            for(int generationNum = 0; generationNum < NumberOfGenerations; generationNum++)
+            {
+                currentGen = genAlg.GenerateGeneration();
+                
+                IChromosome chromosome = currentGen[generationNum]; //current array of genes
+                //...TO-DO
+            }
         }
 
         public ContentsOfGrid[,] GenerateRandomTestGrid()
@@ -98,41 +114,47 @@ namespace RobbyTheRobot
             return grid;
         }
 
-        /// <summary> TO-DO
+        /// <summary> [TO-DO]
         /// This function computes the fitness of a chromosome for a given random 
         /// of TestGrid. It then computes the score and returns a double.
         /// </summary>
-        /// <param name="moves">IChoromosome, containing gene list of 243 moves</param>
+        /// <param name="moves">IChoromosome, containing gene list of 243 genes (moves)</param>
         /// <returns>Fitness score for the given chromosome</returns>
         public double ComputeFitness(IChromosome chromosome, IGeneration generation)
         {
             Random rand = GenerateRandom();
 
-            ContentsOfGrid[,] testGrid;
+            ContentsOfGrid[,] testGrid = GenerateRandomTestGrid();
             int posX = 0;
             int posY = 0;
+            double score = 0;
 
-            testGrid = GenerateRandomTestGrid();
-            double score = RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
+            for(int move = 0; move < NumberOfActions; move++)
+            {
+                score += RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
+            }
 
             return score;
         }
 
         /// <summary>
-        /// Testing function of ComputeFitness() that only takes a random gene.
+        /// Testing function of ComputeFitness() that only takes a random chromosome.
         /// </summary>
         /// <param name="moves">Gene array of moves</param>
-        /// <returns>Fitness score for the given gene</returns>
+        /// <returns>Fitness score for the given chromosome</returns>
         public double ComputeFitness(int[] moves)
         {
             Random rand = GenerateRandom();
 
-            ContentsOfGrid[,] testGrid;
+            ContentsOfGrid[,] testGrid = GenerateRandomTestGrid();
             int posX = 0;
             int posY = 0;
+            double score = 0;
 
-            testGrid = GenerateRandomTestGrid();
-            double score = RobbyHelper.ScoreForAllele(moves, testGrid, rand, ref posX, ref posY);
+            for(int move = 0; move < NumberOfActions; move++)
+            {
+                score += RobbyHelper.ScoreForAllele(moves, testGrid, rand, ref posX, ref posY);
+            }
 
             return score;
         }

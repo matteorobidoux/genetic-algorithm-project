@@ -11,7 +11,7 @@ namespace TestRobbyTheRobot
         [TestMethod]
         public void TestGenerateRandomTestGridFiftyFifty()
         {
-            var robby = Robby.CreateRobby(10, 0, 0, 0, 0, 0, 0);
+            var robby = Robby.CreateRobby(200, 1, 10, 100, 404, 404, 200, 1, null);
             var grid = robby.GenerateRandomTestGrid();
             
             int numOfCans = 0;
@@ -37,11 +37,12 @@ namespace TestRobbyTheRobot
         }
 
         [TestMethod]
-        public void TestComputeFitness()
+        public void TestComputeFitnessSeeded()
         {
-            var robby = Robby.CreateRobby(10, 100, 0, 0, 0, 0, 0, 1);
+            //create SEEDED robby
+            var robby = Robby.CreateRobby(200, 1, 10, 100, 404, 404, 200, 1, 1);
 
-            //generate random list of 243 moves
+            //generate random SEEDED list of 243 moves
             int[] moves = new int[243];
             Random rand = new Random(1);
             for (int i = 0; i < moves.Length; i++)
@@ -50,9 +51,9 @@ namespace TestRobbyTheRobot
             }
 
             double score = robby.ComputeFitness(moves);
+            
             Console.WriteLine("FITNESS: " + score);
-
-            Assert.AreEqual(-5, score);
+            Assert.AreEqual(-1000, score);
         }
     }
 }
