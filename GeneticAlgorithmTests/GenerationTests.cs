@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using GeneticAlgorithm;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GeneticAlgorithmTests
 {
@@ -11,6 +12,8 @@ namespace GeneticAlgorithmTests
     public void TestCtor()
     {
       var alg = new MockAlgorithm(10, 5, 10, 5);
+      Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(null, MockCalcFitness);});
+      Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(alg, null);});
       Generation g1 = new Generation(alg, MockCalcFitness, 0);
       int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
       Assert.AreEqual(10, g1.NumberOfChromosomes);
@@ -50,6 +53,10 @@ namespace GeneticAlgorithmTests
       {
         chromes[i] = new Chromosome(alg.NumberOfGenes, alg.LengthOfGene, 0);
       }
+
+      Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(null, g1);});
+      Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(new Chromosome[10], null);});
+      Assert.ThrowsException<ArgumentException>(() => {new Generation(new MockChromosome[10], g1);});
       Generation g2 = new Generation(chromes, g1);
 
       int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
@@ -133,7 +140,6 @@ namespace GeneticAlgorithmTests
     {
       var alg = new MockAlgorithm(10, 5, 10, 5);
       Generation g1 = new Generation(alg, MockCalcFitness, 0);
-      int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
       g1.EvaluateFitnessOfPopulation();
       Assert.AreEqual(g1[7], g1.SelectParent());
     }
@@ -146,11 +152,46 @@ namespace GeneticAlgorithmTests
       g1.EvaluateFitnessOfPopulation();
       Assert.IsTrue(g1.SelectParent() is Chromosome);
     }
+
+    [TestMethod]
+    public void TestSelectParentNegativeFitness()
+    {
+      var alg = new MockAlgorithm(10, 5, 10, 5);
+      Generation g1 = new Generation(alg, MockCalcFitnessNegative, 0);
+      g1.EvaluateFitnessOfPopulation();
+      Assert.AreEqual(g1[7], g1.SelectParent());
+    }
     
 
     private double MockCalcFitness(IChromosome chromosome, IGeneration generation)
     {
       return chromosome[0];
+    }
+
+    private double MockCalcFitnessNegative(IChromosome chromosome, IGeneration generation)
+    {
+      return -1 * chromosome[0];
+    }
+
+    private class MockChromosome : IChromosome
+    {
+      public int this[int index] => throw new NotImplementedException();
+
+      public double Fitness => throw new NotImplementedException();
+
+      public int[] Genes => throw new NotImplementedException();
+
+      public long Length => throw new NotImplementedException();
+
+      public int CompareTo([AllowNull] IChromosome other)
+      {
+        throw new NotImplementedException();
+      }
+
+      public IChromosome[] Reproduce(IChromosome spouse, double mutationProb)
+      {
+        throw new NotImplementedException();
+      }
     }
 
     private class MockAlgorithm : IGeneticAlgorithm
