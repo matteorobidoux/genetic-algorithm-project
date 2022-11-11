@@ -53,6 +53,7 @@ namespace TestRobbyTheRobot
             double score = robby.ComputeFitness(moves);
             
             Console.WriteLine("FITNESS: " + score);
+            Console.WriteLine(string.Join("", moves));
             Assert.AreEqual(-1000, score);
         }
     }

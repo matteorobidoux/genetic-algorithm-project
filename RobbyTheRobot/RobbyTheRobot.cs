@@ -1,10 +1,14 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using GeneticAlgorithm;
 
 namespace RobbyTheRobot
 {
     internal class RobbyTheRobot : IRobbyTheRobot
     {
+        private const int NumberOfGenes = 243;
+        private const int LengthOfGene = 7;
         private int _numberOfActions; // number of moves robby can do (200)
         private int _numberOfTestGrids; //number of test grids to generate
         private int _gridSize; // size of one dimension of the grid
@@ -47,16 +51,49 @@ namespace RobbyTheRobot
 
         public void GeneratePossibleSolutions(string folderPath)
         {
-            var genAlg = GeneticLib.CreateGeneticAlgorithm(_populationSize, 7, 243, 404, 404, _numberOfTrials, ComputeFitness, 1);
+            var genAlg = GeneticLib.CreateGeneticAlgorithm(_populationSize, NumberOfGenes, LengthOfGene, _mutationRate, _eliteRate, _numberOfTrials, ComputeFitness, 1);
             IGeneration currentGen;
 
-            for(int generationNum = 0; generationNum < NumberOfGenerations; generationNum++)
+            for(int generationNum = 1; generationNum <= NumberOfGenerations; generationNum++)
             {
                 currentGen = genAlg.GenerateGeneration();
                 
-                IChromosome chromosome = currentGen[generationNum]; //current array of genes
-                //...TO-DO
+                if(generationNum == 1 || generationNum == 20 || generationNum == 100 || generationNum == 200 || generationNum == 500 || generationNum == 1000)
+                {
+                    IChromosome bestChromosome = BestCandidate(currentGen, currentGen.MaxFitness);
+                    string candidate = currentGen.MaxFitness + ";" + NumberOfActions + ";" + string.Join("", bestChromosome.Genes);
+                    
+                    WriteToFile(folderPath + $"\\generation{generationNum}.txt", candidate);
+
+                    //call delegate that file has been written
+                }
             }
+        }
+
+        private void WriteToFile(string path, string text)
+        {
+            if(!File.Exists(path))
+            {
+                File.WriteAllText(path, text, Encoding.UTF8);
+            }
+        }
+
+        //BAD Linear Search, need to figure way to find chromosome with MaxFitness
+        private IChromosome BestCandidate(IGeneration currentGen, double maxFitness)
+        {
+            IChromosome bestChromosome = null;
+
+            for(int i = 0; i < currentGen.NumberOfChromosomes; i++)
+            {
+                bestChromosome = currentGen[i];
+
+                if(bestChromosome.Fitness == maxFitness)
+                {
+                    return bestChromosome;
+                }
+            }
+
+            return bestChromosome;
         }
 
         public ContentsOfGrid[,] GenerateRandomTestGrid()
