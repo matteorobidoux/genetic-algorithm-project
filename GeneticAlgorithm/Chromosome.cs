@@ -44,11 +44,11 @@ namespace GeneticAlgorithm
     {
       if(numGenes <= 0) 
       {
-        throw new ArgumentException($"The number of genes must be a positive integer. Got: {numGenes}");
+        throw new ArgumentOutOfRangeException($"The number of genes must be a positive integer. Got: {numGenes}");
       }
       if (lengthOfGenes <= 0)
       {
-        throw new ArgumentException($"The length of a gene must be a positive integer. Got: {lengthOfGenes}");
+        throw new ArgumentOutOfRangeException($"The length of a gene must be a positive integer. Got: {lengthOfGenes}");
       }
       _seed = seed;
       Random rand = GetRandomObj();
