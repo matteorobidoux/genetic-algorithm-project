@@ -82,23 +82,24 @@ namespace GeneticAlgorithm
     public void EvaluateFitnessOfPopulation()
     {
       double totalFitness = 0;
-      for (int i = 0; i < _alg.NumberOfTrials; i++)
-      {
+      
         foreach (Chromosome chromosome in _generation)
         {
-          double fitness = _fitnessCalc(chromosome, this) / _alg.NumberOfTrials;
-          //reset the fitness if a fitness already exists
-          if (i == 0) {
-            chromosome.Fitness = 0;
+          for (int i = 0; i < _alg.NumberOfTrials; i++)
+          {
+            double fitness = _fitnessCalc(chromosome, this) / _alg.NumberOfTrials;
+            //reset the fitness if a fitness already exists
+            if (i == 0) {
+              chromosome.Fitness = 0;
+            }
+            chromosome.Fitness += fitness;
+            totalFitness += fitness;
           }
-          chromosome.Fitness += fitness;
-          totalFitness += fitness;
           if (chromosome.Fitness > MaxFitness)
           {
             MaxFitness = chromosome.Fitness;
           }
         }
-      }
       AverageFitness = totalFitness/NumberOfChromosomes;
       Array.Sort(_generation);
     }
@@ -108,17 +109,25 @@ namespace GeneticAlgorithm
       //Could have a problem/crash if the fitnesses are all negative, or the average is 0
       //If the average is positive and there are some negatives, then they will never be chosen
       Random rand = GetRandomObj();
-      double pool = rand.NextDouble() * (AverageFitness * NumberOfChromosomes);
-      int index;
-      for (index = 0; index < NumberOfChromosomes; index++)
+      //Weigthed selection algorithm only works with positive fitnesses
+      if (AverageFitness > 0) 
       {
-        pool -= _generation[index].Fitness;
-        if (pool <= 0)
+        double pool = rand.NextDouble() * (AverageFitness * NumberOfChromosomes);
+        int index;
+        for (index = 0; index < NumberOfChromosomes; index++)
         {
-          break;
-        } 
+          pool -= _generation[index].Fitness;
+          if (pool <= 0)
+          {
+            break;
+          } 
+        }
+        return _generation[index];
       }
-      return _generation[index - 1];
+      else
+      {
+        return _generation[rand.Next(_generation.Length)];
+      }
     }
   }
 }

@@ -111,15 +111,19 @@ namespace GeneticAlgorithm
         nextGeneration[i] = _currentGeneration[i];
       }
       Generation eliteGen = new Generation(elites, _currentGeneration);
+      //Fill the remaining population with children
       for (int i = elites.Length; i < PopulationSize - 1; i += 2)
       {
         IChromosome parent1 = eliteGen.SelectParent();
         IChromosome parent2;
+        int tries = 0;
+        //Try and prevent inbreeding
         do 
         {
           parent2 = eliteGen.SelectParent();
+          tries++;
         }
-        while(_seed == null && parent1 == parent2);
+        while(_seed == null && parent1 == parent2 && tries < 42);
         IChromosome[] children = parent1.Reproduce(parent2, MutationRate);
         nextGeneration[i] = children[0];
         nextGeneration[i + 1] = children[1];

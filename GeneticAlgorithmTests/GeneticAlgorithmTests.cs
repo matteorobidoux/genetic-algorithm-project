@@ -213,9 +213,35 @@ namespace GeneticAlgorithmTests
       }
     }
 
+    [TestMethod]
+    public void TestRandomGenerateGenerationAllowInbreeding()
+    {
+      var alg = new GeneticAlgorithm.GeneticAlgorithm(10, 10, 5, .5, .4, 5, MockCalcFitnessBad);
+      alg.GenerateGeneration();
+      alg.GenerateGeneration();
+      Assert.AreEqual(2, alg.GenerationCount);
+      Generation g1 = alg.CurrentGeneration as Generation;
+      Assert.AreEqual(10, g1.NumberOfChromosomes);
+      Assert.AreEqual(1, g1.MaxFitness);
+      for (int i = 0; i < g1.NumberOfChromosomes; i++)
+      {
+        Assert.AreEqual(10, g1[i].Length);
+        for (int j = 0; j < g1[i].Length; j++)
+        {
+          Assert.AreEqual(2, g1[i][j], 2);
+        }
+      }
+    }
+
     private double MockCalcFitness(IChromosome chromosome, IGeneration generation)
     {
       return chromosome[0];
+    }
+    
+    private int _mockCount;
+    private double MockCalcFitnessBad(IChromosome chromosome, IGeneration generation)
+    {
+      return _mockCount++ <= 55? 1 : 0;
     }
   }
 
