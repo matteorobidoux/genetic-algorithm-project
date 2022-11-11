@@ -57,7 +57,8 @@ namespace RobbyVisualizer
         {
             _spriteBatch.Begin();
             if(IsVisible){
-                _spriteBatch.Draw(_cookieSprite, new Rectangle(_xPosition, _yPosition, 90, 90), Color.White);
+                // +4 on X and Y position is a fudge factor for centering cookie withing square
+                _spriteBatch.Draw(_cookieSprite, new Rectangle(_xPosition+4, _yPosition+4, 90, 90), Color.White);
             }
             _spriteBatch.End();
             base.Draw(gameTime);

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace RobbyVisualizer
 {
@@ -21,12 +22,17 @@ namespace RobbyVisualizer
         private SpriteFont _infoFontSprite;
         private Texture2D _background;
         private bool _run;
+        private string[] _moves;
+        private int _numOfMoves;
+
         public RobbyVisualizerGame()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             _run = false;
+            _moves = null;
+            _numOfMoves = 0;
         }
 
         protected override void Initialize()
@@ -103,16 +109,17 @@ namespace RobbyVisualizer
 
             base.Update(gameTime);
         }
-
-        protected override void Draw(GameTime gameTime)
+    protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(_background, new Rectangle(0,0,1950, 1125),Color.White);
-            _spriteBatch.DrawString(_infoFontSprite, $"Generation: ", new Vector2(470, 820), Color.White);
-            _spriteBatch.DrawString(_infoFontSprite, "Move: ", new Vector2(470, 855), Color.White);
-            _spriteBatch.DrawString(_infoFontSprite, "Points: ", new Vector2(470, 890), Color.White);
+            if(_moves != null){
+                _spriteBatch.DrawString(_infoFontSprite, $"Generation: {_moves[0]}", new Vector2(470, 820), Color.White);
+                _spriteBatch.DrawString(_infoFontSprite, $"Move: {_numOfMoves}/{_moves[1]}", new Vector2(470, 855), Color.White);
+                _spriteBatch.DrawString(_infoFontSprite, $"Points: /{_moves[2]}", new Vector2(470, 890), Color.White);
+            }
             _spriteBatch.End();
             // TODO: Add your drawing code here
             base.Draw(gameTime);
@@ -121,23 +128,25 @@ namespace RobbyVisualizer
         public void MoveCookieMonster(){
             var task = new Task(() => {
                 foreach(string file in _buttonSprite.Files){
-                    string moves = System.IO.File.ReadAllText(file);
-                    foreach(char move in moves){
-                        if(move == '1' && _cookieMonster.YPosition - 78 >= 20){
+                    _moves = System.IO.File.ReadAllText(file).Split(",");
+                    for(int i = 3; i < Int32.Parse(_moves[1])+3; i++){
+                        if(_moves[i] == "1" && _cookieMonster.YPosition - 78 >= 20){
                             _cookieMonster.YPosition -= 78;
-                        } else if(move == '2' && _cookieMonster.YPosition + 78 <= 722){
+                        } else if(_moves[i] == "2" && _cookieMonster.YPosition + 78 <= 722){
                         _cookieMonster.YPosition += 78;
-                        } else if(move == '3' && _cookieMonster.XPosition - 78 >= 460){
+                        } else if(_moves[i] == "3" && _cookieMonster.XPosition - 78 >= 460){
                             _cookieMonster.XPosition -= 78;
-                        } else if(move == '4' && _cookieMonster.XPosition + 78 <= 1162){
+                        } else if(_moves[i] == "4" && _cookieMonster.XPosition + 78 <= 1162){
                             _cookieMonster.XPosition += 78;
                         }
                         Thread.Sleep(500);
+                        _numOfMoves++;
                     }
                     _cookieMonster.XPosition = 460;
                     _cookieMonster.YPosition = 20;
                     MediaPlayer.Stop();
                     Thread.Sleep(2000);
+                    _numOfMoves = 0;
                 } 
             });
             task.Start();
