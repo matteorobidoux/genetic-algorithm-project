@@ -12,8 +12,6 @@ namespace GeneticAlgorithmTests
     public void TestCtor()
     {
       var alg = new MockAlgorithm(10, 5, 10, 5);
-      Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(null, MockCalcFitness);});
-      Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(alg, null);});
       Generation g1 = new Generation(alg, MockCalcFitness, 0);
       int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
       Assert.AreEqual(10, g1.NumberOfChromosomes);
@@ -53,10 +51,6 @@ namespace GeneticAlgorithmTests
       {
         chromes[i] = new Chromosome(alg.NumberOfGenes, alg.LengthOfGene, 0);
       }
-
-      Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(null, g1);});
-      Assert.ThrowsException<ArgumentNullException>(()=>{new Generation(new Chromosome[10], null);});
-      Assert.ThrowsException<ArgumentException>(() => {new Generation(new MockChromosome[10], g1);});
       Generation g2 = new Generation(chromes, g1);
 
       int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
@@ -133,6 +127,7 @@ namespace GeneticAlgorithmTests
       {
         Assert.AreEqual(5, g1[i].Fitness, 5);
       }
+      Assert.AreEqual(g1.MaxFitness, g1[0].Fitness);
     }
 
     [TestMethod]
