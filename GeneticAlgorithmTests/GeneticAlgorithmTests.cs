@@ -230,7 +230,7 @@ namespace GeneticAlgorithmTests
     private int _mockCount;
     private double MockCalcFitnessBad(IChromosome chromosome, IGeneration generation)
     {
-      return _mockCount++ <= 55? 1 : 0;
+      return _mockCount++ < 5? 1 : 0;
     }
   }
 
