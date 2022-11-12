@@ -129,7 +129,7 @@ namespace GeneticAlgorithm
     // </summary>
     private void Cross(Chromosome childA, Chromosome childB, int start, int end)
     {
-      Debug.Assert(start < end, "You may have accidentally swapped the two points");
+      Debug.Assert(start <= end, "You may have accidentally swapped the two points");
       Debug.Assert(childA != null & childB != null, "Neither of the children can be null");
       for (int i = start; i <= end; i++) {
         int temp = childA[i];
