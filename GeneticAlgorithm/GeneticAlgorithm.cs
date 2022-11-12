@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace GeneticAlgorithm
 {
@@ -30,38 +31,14 @@ namespace GeneticAlgorithm
     internal GeneticAlgorithm(int populationSize, int numberOfGenes, int lengthOfGenes, double mutationRate,
      double eliteRate, int numberOfTrials, FitnessEventHandler calcFunction, int? seed = null) 
     {
-      if (populationSize < 10)
-      {
-        throw new ArgumentOutOfRangeException($"Population minimum is 10. Got: {populationSize}");
-      }
-      if(numberOfGenes <= 0) 
-      {
-        throw new ArgumentOutOfRangeException($"The number of genes must be a positive integer. Got: {numberOfGenes}");
-      }
-      if (lengthOfGenes <= 0)
-      {
-        throw new ArgumentOutOfRangeException($"The length of a gene must be a positive integer. Got: {lengthOfGenes}");
-      }
-      if (eliteRate < 0 || eliteRate > 1)
-      {
-        throw new ArgumentOutOfRangeException($"Elite rate expected between 0 and 1. Got: {eliteRate}");
-      }
-      if (populationSize % 2 == 0 && eliteRate * populationSize < 2 || populationSize % 2 == 1 && eliteRate * populationSize < 3)
-      {
-        throw new ArgumentOutOfRangeException($"Elite rate must provide at least 2 or 3 parents depending on the population size");
-      }
-      if (mutationRate < 0 || mutationRate > 1)
-      {
-        throw new ArgumentOutOfRangeException($"Mutation rate expected between 0 and 1. Got: {mutationRate}");
-      }
-      if (numberOfTrials <= 0)
-      {
-        throw new ArgumentOutOfRangeException($"Minimum number of trials is 1. Got: {numberOfTrials}");
-      }
-      if (calcFunction == null)
-      {
-        throw new ArgumentNullException($"The fitness calculation delegate cannot be null");
-      }
+      Debug.Assert(populationSize >= 10, "Don't know how this got past validation");
+      Debug.Assert(numberOfGenes > 0, "Don't know how this got past validation"); 
+      Debug.Assert(lengthOfGenes > 0, "Don't know how this got past validation");
+      Debug.Assert(eliteRate >= 0 && eliteRate <= 1, "Don't know how this got past validation");
+      Debug.Assert(populationSize % 2 == 0 && eliteRate * populationSize >= 2 || populationSize % 2 == 1 && eliteRate * populationSize >= 3, "Don't know how this got past validation");
+      Debug.Assert(mutationRate >= 0 && mutationRate <= 1, "Don't know how this got past validation");
+      Debug.Assert(numberOfTrials > 0, "Don't know how this got past validation");
+      Debug.Assert(calcFunction != null, "Don't know how this got past validation");
       PopulationSize = populationSize;
       NumberOfGenes = numberOfGenes;
       LengthOfGene = lengthOfGenes;
@@ -78,6 +55,8 @@ namespace GeneticAlgorithm
       {
         _eliteNum--;
       }
+
+      Debug.Assert(_eliteNum % 2 == populationSize % 2, "Something went wrong with the above code");
       
     }
 
@@ -92,6 +71,7 @@ namespace GeneticAlgorithm
         _currentGeneration = GenerateNextGeneration();
       }
       _generationCount++;
+      Debug.Assert(_currentGeneration != null, "How is it even possible for it to be null?");
       _currentGeneration.EvaluateFitnessOfPopulation();
       return _currentGeneration;
     }
@@ -105,6 +85,7 @@ namespace GeneticAlgorithm
       Random rand = _seed == null ? new Random() : new Random((int)_seed);
       IChromosome[] elites = new Chromosome[_eliteNum];
       IChromosome[] nextGeneration = new Chromosome[PopulationSize];
+      Debug.Assert(_currentGeneration != null, "This probably shouldn't be running");
       for (int i = 0; i < elites.Length; i++)
       {
         elites[i] = _currentGeneration[i];
