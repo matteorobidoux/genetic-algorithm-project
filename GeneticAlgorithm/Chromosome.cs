@@ -84,6 +84,8 @@ namespace GeneticAlgorithm
       {
         throw new ArgumentOutOfRangeException($"Invalid mutationProb. Expected value between 0 and 1. Got: {mutationProb}");
       }
+      Debug.Assert(_genes != null, "How did this even happen?");
+      Debug.Assert(_lengthOfGenes >= 0, "How did this even happen?");
       Chromosome parent = spouse as Chromosome;
       Chromosome[] children = new Chromosome[]{new Chromosome(_genes, _lengthOfGenes, _seed), 
       new Chromosome(parent._genes, parent._lengthOfGenes, parent._seed)};
@@ -106,6 +108,7 @@ namespace GeneticAlgorithm
     {
       Debug.Assert(children != null, "Gotta have children to mutate");
       Debug.Assert(mutationProb >= 0 && mutationProb <= 1, "Your mutation chance is wrong");
+      Debug.Assert(_genes != null, "How did this even happen?");
       Random rand = GetRandomObj();
       for (int i = 0; i < Length; i++)
       {
