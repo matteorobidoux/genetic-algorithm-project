@@ -40,6 +40,10 @@ namespace RobbyIterationGenerator
 
         private static IRobbyTheRobot MakeRobby()
         {
+            //TODO 
+            //Make sure the validation is good
+            //Input the retrieved values into the Robby creator
+            //Hard code the other values inside Robby creator (length/number of genes, grid size, etc.)
             int numActions = GetInputFromUser<Int32>("\nHow many actions is Robby allowed to take?", (string input, out Int32 output) => {
                 return Int32.TryParse(input, out output) && output > 0;
             });
@@ -48,11 +52,22 @@ namespace RobbyIterationGenerator
                 return Int32.TryParse(input, out output) && output > 0;
             });
 
-            int gridSize = GetInputFromUser<Int32>("\nHow big should the test grids be?", (string input, out Int32 output) => {
+            int populationSize = GetInputFromUser<Int32>("\nHow many Robbys should there be per generation?", (string input, out Int32 output) => {
                 return Int32.TryParse(input, out output) && output > 0;
             });
 
-            
+            int numGenerations = GetInputFromUser<Int32>("\nHow many generations of Robby should there be?", (string input, out Int32 output) => {
+                return Int32.TryParse(input, out output) && output > 0;
+            });
+
+            double eliteRate = GetInputFromUser<Double>("\nWhat elite rate would you like?", (string input, out Double output) => {
+                return Double.TryParse(input, out output) && output >= 0 && output <= 1;
+            });
+
+            double mutationRate = GetInputFromUser<Double>("\nWhat mutation rate would you like?", (string input, out Double output) => {
+                return Double.TryParse(input, out output) && output >= 0 && output <= 1;
+            });
+
             return Robby.CreateRobby();
         }
     }
