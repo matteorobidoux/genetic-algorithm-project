@@ -48,9 +48,7 @@ namespace RobbyTheRobot
         int NumberOfTestGrids {get;}
         int GridSize {get;}
         int NumberOfGenerations {get;}
-
         double MutationRate {get;}
-
         double EliteRate {get;}
         double PopulationSize {get;}
         double NumberOfTrials {get;}
@@ -75,9 +73,12 @@ namespace RobbyTheRobot
         /// <summary>
         /// An event raised when a file is written to disk
         /// </summary>
-        //event TODOMYCUSTOMDELEGATE FileWritten;
+        event FileHandler FileWrittenEvent;
 
     }
 
-    ///TODO Add custom delegate
+    /// <summary>
+    /// Custom delegate for IO.
+    /// </summary>
+    public delegate void FileHandler(string metadata);
 }

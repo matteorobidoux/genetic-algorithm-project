@@ -92,6 +92,8 @@ namespace RobbyTheRobot
             }
         }
 
+        public event FileHandler FileWrittenEvent;
+
         public void GeneratePossibleSolutions(string folderPath)
         {
             var genAlg = GeneticLib.CreateGeneticAlgorithm(_populationSize, NumberOfGenes, LengthOfGene, _mutationRate, _eliteRate, _numberOfTrials, ComputeFitness, _potentialSeed);
@@ -108,11 +110,16 @@ namespace RobbyTheRobot
                     
                     WriteToFile(folderPath + $"\\generation{generationNum}.txt", candidate);
 
-                    //call delegate that file has been written
+                    FileWrittenEvent($"Generation #{generationNum} successfully written to disk.");
                 }
             }
         }
 
+        /// <summary>
+        /// Helper function to write files to disk provided a path and text.
+        /// </summary>
+        /// <param name="path">Path to where the file will be written</param>
+        /// <param name="text">Input string to store in the File</param>
         private void WriteToFile(string path, string text)
         {
             if(!File.Exists(path))
