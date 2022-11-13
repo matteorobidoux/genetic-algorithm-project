@@ -36,6 +36,24 @@ namespace RobbyIterationGenerator
                 }
                 return false;
             });
+            
+            Task thread = Task.Run(() => {
+                robby.GeneratePossibleSolutions(path);
+            });
+
+            bool running = true;
+
+            while (running)
+            {
+                ConsoleKey key = Console.ReadKey(true).Key;
+                
+                if (key == ConsoleKey.Escape)
+                {
+                    running = false;
+                }
+            }
+
+            //TODO stop the running task
 
 
             //MAYBE TODO -> Remove the file event listener?
