@@ -103,14 +103,22 @@ namespace RobbyTheRobot
             {
                 currentGen = genAlg.GenerateGeneration();
                 
-                if(generationNum == 1 || generationNum == 20 || generationNum == 100 || generationNum == 200 || generationNum == 500 || generationNum == 1000)
+                if(generationNum == 1 ||
+                   generationNum == Math.Round(NumberOfGenerations * 0.02) || 
+                   generationNum == Math.Round(NumberOfGenerations * 0.1) || 
+                   generationNum == Math.Round(NumberOfGenerations * 0.2) || 
+                   generationNum == Math.Round(NumberOfGenerations * 0.5) || 
+                   generationNum == NumberOfGenerations)
                 {
                     IChromosome bestChromosome = currentGen[0]; //IGeneration sorted to have candidate with max fitness as index 0.
                     string candidate = currentGen.MaxFitness + ";" + NumberOfActions + ";" + string.Join("", bestChromosome.Genes);
-                    
                     WriteToFile(folderPath + $"\\generation{generationNum}.txt", candidate);
 
-                    FileWrittenEvent($"Generation #{generationNum} successfully written to disk.");
+                    if(FileWrittenEvent != null)
+                    {
+                        string metadata = $"Generation #{generationNum} successfully written to disk.";
+                        FileWrittenEvent(metadata);
+                    }
                 }
             }
         }
@@ -210,7 +218,7 @@ namespace RobbyTheRobot
                 }
             }
 
-            return score;
+            return (score / NumberOfTestGrids);
         }
 
         /// <summary>

@@ -9,6 +9,7 @@ namespace TestRobbyTheRobot
     [TestClass]
     public class TestRobbyTheRobot
     {
+        //Tests constructor
         [TestMethod]
         public void TestCtor()
         {
@@ -31,6 +32,7 @@ namespace TestRobbyTheRobot
             Assert.AreEqual(1, robby.NumberOfTrials);
         }
 
+        //Determines if generated test grid with even dimensions gives proper can/empty ratio
         [TestMethod]
         public void TestGenerateRandomTestGridFiftyFiftyEvenGrid()
         {
@@ -48,11 +50,13 @@ namespace TestRobbyTheRobot
             //50$ empty from the gridsize (rounds up if odd gridsize)
             int expectedEmpty = (int) Math.Round(robby.GridSize * robby.GridSize * 0.5, MidpointRounding.AwayFromZero);
 
-
+            Console.WriteLine("CANS: " + numOfCans);
+            Console.WriteLine("EMPTIES: " + numOfEmpties);
             Assert.AreEqual(expectedCans, numOfCans);
             Assert.AreEqual(expectedEmpty, numOfEmpties);
         }
 
+        //Determines if generated test grid with odd dimensions gives proper can/empty ratio
         [TestMethod]
         public void TestGenerateRandomTestGridFiftyFiftyOddGrid()
         {
@@ -70,11 +74,13 @@ namespace TestRobbyTheRobot
             //50$ empty from the gridsize (rounds up if odd gridsize)
             int expectedEmpty = (int) Math.Round(robby.GridSize * robby.GridSize * 0.5, MidpointRounding.AwayFromZero);
 
+            Console.WriteLine("CANS: " + numOfCans);
+            Console.WriteLine("EMPTIES: " + numOfEmpties);
             Assert.AreEqual(expectedCans, numOfCans);
             Assert.AreEqual(expectedEmpty, numOfEmpties);
         }
 
-
+        //Expects Robby's fitness for one chromosome on 3 test grids to be -3000. (seeded)
         [TestMethod]
         public void TestComputeFitnessSeeded()
         {
@@ -85,11 +91,12 @@ namespace TestRobbyTheRobot
             int[] moves = MockGenerateGeneArray(seed);
             double score = MockComputeFitness(moves, robby, seed);
             
-            //Console.WriteLine("FITNESS: " + score);
-            //Console.WriteLine("MOVES: " + string.Join("", moves));
-            Assert.AreEqual(-3000, score);
+            Console.WriteLine("FITNESS: " + score);
+            Console.WriteLine("GENES: " + string.Join("", moves));
+            Assert.AreEqual(-1000, score);
         }
 
+        //Expects files written to disk to output consistent results. (seeded)
         [TestMethod]
         public void TestGeneratePossibleSolutionsSeeded()
         {
@@ -98,7 +105,7 @@ namespace TestRobbyTheRobot
             var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, 1, seed);
 
             //automatically create test directory
-            string testOutputDirectory = "..\\..\\..\\GenerationBinTests";
+            string testOutputDirectory = "..\\..\\..\\GenerationsBinSeededTests";
             Directory.CreateDirectory(testOutputDirectory);
 
             //write file in ./TestRobbyTheRobot/GenerationBinTests/
@@ -113,7 +120,39 @@ namespace TestRobbyTheRobot
             Assert.AreEqual(expectedOutputForGen100, File.ReadAllText($"{testOutputDirectory}\\generation100.txt"));
         }
 
+        //Expects the event to be raised 6 times for 100 generations. (not seeded)
+        [TestMethod]
+        public void TestGeneratePossibleSolutionsDelegateEvent()
+        {
+            int? seed = null;
+
+            var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, 1, seed);
+            robby.FileWrittenEvent += new FileHandler(CatchEvent);
+            int eventCallCounter = 0;
+            robby.FileWrittenEvent += delegate {
+                eventCallCounter++;
+            };
+
+            //automatically create test directory
+            string testOutputDirectory = "..\\..\\..\\GenerationsBinEventTests";
+            Directory.CreateDirectory(testOutputDirectory);
+
+            //write file in ./TestRobbyTheRobot/GenerationBinTests/
+            robby.GeneratePossibleSolutions(testOutputDirectory);
+
+            Assert.AreEqual(6, eventCallCounter);
+        }
+
         //Mock functions
+        
+        /// <summary>
+        /// Function that prints to console when event is raised.
+        /// </summary>
+        /// <param>Metadata from Robby.GeneratePossibleSolutions()</param>
+        public static void CatchEvent(string metadata)
+        {
+            Console.WriteLine("Event called!: " + metadata);
+        }
 
         public static int CountCansInGrid(ContentsOfGrid[,] grid)
         {
@@ -186,7 +225,7 @@ namespace TestRobbyTheRobot
                 }
             }
 
-            return score;
+            return (score / robby.NumberOfTestGrids);
         }
 
          /// <summary>
