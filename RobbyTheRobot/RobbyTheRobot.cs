@@ -7,23 +7,25 @@ namespace RobbyTheRobot
 {
     internal class RobbyTheRobot : IRobbyTheRobot
     {
-        private const int NumberOfGenes = 243;
-        private const int LengthOfGene = 7;
+        public int NumberOfGenes {get => 243;} //length of int[] _genes in Chromosome
+        public int LengthOfGene {get => 7;} //variety of genes (different actions robby can do), from 0 to 6.
         private int _numberOfActions; // number of moves robby can do (200)
         private int _numberOfTestGrids; //number of test grids to generate
-        private int _gridSize; // size of one dimension of the grid
-        private int _numberOfGenerations; // number of generations
-        private double _mutationRate; //??
-        private double _eliteRate; //??
-        private int _populationSize; // number of chromosomes initially (200)
-        private int _numberOfTrials; // The number of times the fitness function should be called when computing the result
-        private int? _potentialSeed; // for making random predictable
+        private int _gridSize; //size of one dimension of the grid
+        private int _numberOfGenerations; //number of generations
+        private double _mutationRate; //between 0 and 1
+        private double _eliteRate; //between 0 and 1
+        private int _populationSize; //number of chromosomes initially (200)
+        private int _numberOfTrials; //The number of times the fitness function should be called when computing the result
+        private int? _potentialSeed; //for making random predictable
         public int NumberOfActions {get => _numberOfActions;} //steps for robby
         public int NumberOfTestGrids {get => _numberOfTestGrids;} //decide myself
         public int GridSize {get => _gridSize;} //constant 10
         public int NumberOfGenerations {get => _numberOfGenerations;} //set in constructor, by user
         public double MutationRate {get => _mutationRate;} //set in constructor, by user 
         public double EliteRate {get => _eliteRate;} //set in constructor, by user
+        public double PopulationSize {get => _populationSize;}
+        public double NumberOfTrials {get => _numberOfTrials;}
         internal RobbyTheRobot(int numberOfActions,
                                int numberOfTestGrids,
                                int gridSize,
@@ -92,7 +94,7 @@ namespace RobbyTheRobot
 
         public void GeneratePossibleSolutions(string folderPath)
         {
-            var genAlg = GeneticLib.CreateGeneticAlgorithm(_populationSize, NumberOfGenes, LengthOfGene, _mutationRate, _eliteRate, _numberOfTrials, ComputeFitness, 1);
+            var genAlg = GeneticLib.CreateGeneticAlgorithm(_populationSize, NumberOfGenes, LengthOfGene, _mutationRate, _eliteRate, _numberOfTrials, ComputeFitness, _potentialSeed);
             IGeneration currentGen;
 
             for(int generationNum = 1; generationNum <= NumberOfGenerations; generationNum++)
@@ -101,7 +103,7 @@ namespace RobbyTheRobot
                 
                 if(generationNum == 1 || generationNum == 20 || generationNum == 100 || generationNum == 200 || generationNum == 500 || generationNum == 1000)
                 {
-                    IChromosome bestChromosome = BestCandidate(currentGen, currentGen.MaxFitness);
+                    IChromosome bestChromosome = currentGen[0]; //IGeneration sorted to have candidate with max fitness as index 0.
                     string candidate = currentGen.MaxFitness + ";" + NumberOfActions + ";" + string.Join("", bestChromosome.Genes);
                     
                     WriteToFile(folderPath + $"\\generation{generationNum}.txt", candidate);
@@ -117,24 +119,6 @@ namespace RobbyTheRobot
             {
                 File.WriteAllText(path, text, Encoding.UTF8);
             }
-        }
-
-        //BAD Linear Search, need to figure way to find chromosome with MaxFitness
-        private IChromosome BestCandidate(IGeneration currentGen, double maxFitness)
-        {
-            IChromosome bestChromosome = null;
-
-            for(int i = 0; i < currentGen.NumberOfChromosomes; i++)
-            {
-                bestChromosome = currentGen[i];
-
-                if(bestChromosome.Fitness == maxFitness)
-                {
-                    return bestChromosome;
-                }
-            }
-
-            return bestChromosome;
         }
 
         public ContentsOfGrid[,] GenerateRandomTestGrid()
@@ -192,46 +176,31 @@ namespace RobbyTheRobot
             return grid;
         }
 
-        /// <summary> [TO-DO]
+        /// <summary>
         /// This function computes the fitness of a chromosome for a given random 
-        /// of TestGrid. It then computes the score and returns a double.
+        /// of TestGrid. If NumberOfTestGrids above 1, it loops for the given amount of test grids, 
+        /// generating a new random test grid for each iteration.
+        /// It then computes the score for a given number of actions (moves) that Robby can do on the grid(s)
+        /// and returns a double.
         /// </summary>
         /// <param name="moves">IChoromosome, containing gene list of 243 genes (moves)</param>
+        /// <param name="generation">Currrent generation</param>
         /// <returns>Fitness score for the given chromosome</returns>
         public double ComputeFitness(IChromosome chromosome, IGeneration generation)
         {
             Random rand = GenerateRandom();
-
-            ContentsOfGrid[,] testGrid = GenerateRandomTestGrid();
-            int posX = 0;
-            int posY = 0;
             double score = 0;
 
-            for(int move = 0; move < NumberOfActions; move++)
+            for(int testGrids = 0; testGrids < NumberOfTestGrids; testGrids++)
             {
-                score += RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
-            }
+                ContentsOfGrid[,] testGrid = GenerateRandomTestGrid();
+                int posX = 0;
+                int posY = 0;
 
-            return score;
-        }
-
-        /// <summary>
-        /// Testing function of ComputeFitness() that only takes a random chromosome.
-        /// </summary>
-        /// <param name="moves">Gene array of moves</param>
-        /// <returns>Fitness score for the given chromosome</returns>
-        public double ComputeFitness(int[] moves)
-        {
-            Random rand = GenerateRandom();
-
-            ContentsOfGrid[,] testGrid = GenerateRandomTestGrid();
-            int posX = 0;
-            int posY = 0;
-            double score = 0;
-
-            for(int move = 0; move < NumberOfActions; move++)
-            {
-                score += RobbyHelper.ScoreForAllele(moves, testGrid, rand, ref posX, ref posY);
+                for(int move = 0; move < NumberOfActions; move++)
+                {
+                    score += RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
+                }
             }
 
             return score;

@@ -14,7 +14,6 @@ namespace RobbyTheRobot
                                                  int numberOfTrials,
                                                  int? potentialSeed = null)
         {
-            //ESSENTIAL: numberOfActions, numberOfTestGrids, gridSize, numberOfGenerations, mutationRate, eliteRate, populationSize, numberOfTrials, potentialSeed
             return new RobbyTheRobot(numberOfActions,
                                      numberOfTestGrids,
                                      gridSize,

@@ -52,6 +52,8 @@ namespace RobbyTheRobot
         double MutationRate {get;}
 
         double EliteRate {get;}
+        double PopulationSize {get;}
+        double NumberOfTrials {get;}
 
         /// <summary>
         /// Used to generate a single test grid filled with cans in random locations. Half of 
@@ -68,7 +70,6 @@ namespace RobbyTheRobot
         /// </summary>
         /// <param name="folderPath">The path of the folder where the text files will be saved</param>
         void GeneratePossibleSolutions(string folderPath);
-        double ComputeFitness(int[] moves);
         double ComputeFitness(IChromosome chromosome, IGeneration generation);
 
         /// <summary>
