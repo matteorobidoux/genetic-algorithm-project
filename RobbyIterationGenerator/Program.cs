@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using RobbyTheRobot;
 
 namespace RobbyIterationGenerator
@@ -14,7 +17,28 @@ namespace RobbyIterationGenerator
             Stopwatch timer = new Stopwatch();
             timer.Start();
 
-            
+            robby = MakeRobby();
+
+            //TODO -> Add the file event listener
+
+            string path = GetInputFromUser<string>("Please enter the folder where you would like to store the output files.", (string input, out string output) => {
+                output = input;
+                if (new Regex("^[0-9a-zA-Z_\\-\\\\\\.\\/\\s]+$").Match(input).Success)
+                {
+                    try {
+                        Directory.CreateDirectory(input);
+                        return true;
+                    } 
+                    catch (Exception e)
+                    {
+                        return false;
+                    }
+                }
+                return false;
+            });
+
+
+            //MAYBE TODO -> Remove the file event listener?
 
             timer.Stop();
             Console.WriteLine($"\nGeneration has stopped. Time Elapsed: {timer.Elapsed}");
