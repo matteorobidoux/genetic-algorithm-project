@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using GeneticAlgorithm;
 
 namespace RobbyTheRobot
@@ -10,30 +11,26 @@ namespace RobbyTheRobot
         public int NumberOfGenes {get => 243;} //length of int[] _genes in Chromosome
         public int LengthOfGene {get => 7;} //variety of genes (different actions robby can do), from 0 to 6.
         private int _numberOfActions; // number of moves robby can do (200)
-        private int _numberOfTestGrids; //number of test grids to generate
+        private int _numberOfTrials; //The number of times the fitness function should be called when computing the result
         private int _gridSize; //size of one dimension of the grid
         private int _numberOfGenerations; //number of generations
         private double _mutationRate; //between 0 and 1
         private double _eliteRate; //between 0 and 1
         private int _populationSize; //number of chromosomes initially (200)
-        private int _numberOfTrials; //The number of times the fitness function should be called when computing the result
         private int? _potentialSeed; //for making random predictable
         public int NumberOfActions {get => _numberOfActions;} //steps for robby
-        public int NumberOfTestGrids {get => _numberOfTestGrids;} //decide myself
+        public int NumberOfTestGrids {get => _numberOfTrials;} //decide myself
         public int GridSize {get => _gridSize;} //constant 10
         public int NumberOfGenerations {get => _numberOfGenerations;} //set in constructor, by user
         public double MutationRate {get => _mutationRate;} //set in constructor, by user 
         public double EliteRate {get => _eliteRate;} //set in constructor, by user
-        public double PopulationSize {get => _populationSize;}
-        public double NumberOfTrials {get => _numberOfTrials;}
         internal RobbyTheRobot(int numberOfActions,
-                               int numberOfTestGrids,
+                               int numberOfTrials,
                                int gridSize,
                                int numberOfGenerations,
                                double mutationRate,
                                double eliteRate,
                                int populationSize,
-                               int numberOfTrials,
                                int? potentialSeed = null)
         {
             if(numberOfActions < 10)
@@ -41,9 +38,9 @@ namespace RobbyTheRobot
                 throw new ArgumentOutOfRangeException($"Number Of Actions minimun is 10. Got {numberOfActions}");
             }
 
-            if(numberOfTestGrids < 1)
+            if(numberOfTrials < 1)
             {
-                throw new ArgumentOutOfRangeException($"Number of test grids minimum is 1. Got {numberOfTestGrids}");
+                throw new ArgumentOutOfRangeException($"Number of test grids minimum is 1. Got {numberOfTrials}");
             }
 
             if(gridSize < 10)
@@ -71,32 +68,26 @@ namespace RobbyTheRobot
                 throw new ArgumentOutOfRangeException($"Population size minimum is 10. Got {populationSize}");
             }
 
-            if(numberOfTrials < 1)
-            {
-                throw new ArgumentOutOfRangeException($"Number of trials minimum is 1. Got {numberOfTrials}");
-            }
-
-
             _numberOfActions = numberOfActions;
-            _numberOfTestGrids = numberOfTestGrids;
+            _numberOfTrials = numberOfTrials;
             _gridSize = gridSize;
             _numberOfGenerations = numberOfGenerations;
             _mutationRate = mutationRate;
             _eliteRate = eliteRate;
             _populationSize = populationSize;
-            _numberOfTrials = numberOfTrials;
-
-            if(potentialSeed != null)
-            {
-                _potentialSeed = potentialSeed;
-            }
+            _potentialSeed = potentialSeed;
         }
 
         public event FileHandler FileWrittenEvent;
 
         public void GeneratePossibleSolutions(string folderPath)
         {
-            var genAlg = GeneticLib.CreateGeneticAlgorithm(_populationSize, NumberOfGenes, LengthOfGene, _mutationRate, _eliteRate, _numberOfTrials, ComputeFitness, _potentialSeed);
+            if(!Directory.Exists(folderPath))
+            {
+                throw new ApplicationException("Folder path specified not found.");
+            }
+
+            var genAlg = GeneticLib.CreateGeneticAlgorithm(_populationSize, NumberOfGenes, LengthOfGene, _mutationRate, _eliteRate, NumberOfTestGrids, ComputeFitness, _potentialSeed);
             IGeneration currentGen;
 
             for(int generationNum = 1; generationNum <= NumberOfGenerations; generationNum++)
@@ -125,6 +116,7 @@ namespace RobbyTheRobot
 
         /// <summary>
         /// Helper function to write files to disk provided a path and text.
+        /// Runs in a separate Thread.
         /// </summary>
         /// <param name="path">Path to where the file will be written</param>
         /// <param name="text">Input string to store in the File</param>
@@ -132,7 +124,7 @@ namespace RobbyTheRobot
         {
             if(!File.Exists(path))
             {
-                File.WriteAllText(path, text, Encoding.UTF8);
+                Task.Run(() => File.WriteAllText(path, text, Encoding.UTF8));
             }
         }
 
@@ -201,24 +193,21 @@ namespace RobbyTheRobot
         /// <param name="moves">IChoromosome, containing gene list of 243 genes (moves)</param>
         /// <param name="generation">Currrent generation</param>
         /// <returns>Fitness score for the given chromosome</returns>
-        public double ComputeFitness(IChromosome chromosome, IGeneration generation)
+        private double ComputeFitness(IChromosome chromosome, IGeneration generation)
         {
             Random rand = GenerateRandom();
+
+            ContentsOfGrid[,] testGrid = GenerateRandomTestGrid();
             double score = 0;
+            int posX = 0;
+            int posY = 0;
 
-            for(int testGrids = 0; testGrids < NumberOfTestGrids; testGrids++)
+            for(int move = 0; move < NumberOfActions; move++)
             {
-                ContentsOfGrid[,] testGrid = GenerateRandomTestGrid();
-                int posX = 0;
-                int posY = 0;
-
-                for(int move = 0; move < NumberOfActions; move++)
-                {
-                    score += RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
-                }
+                score += RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
             }
-
-            return (score / NumberOfTestGrids);
+        
+            return score;
         }
 
         /// <summary>

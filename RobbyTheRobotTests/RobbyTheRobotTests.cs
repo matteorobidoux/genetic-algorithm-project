@@ -4,32 +4,29 @@ using System;
 using GeneticAlgorithm;
 using System.IO;
 
-namespace TestRobbyTheRobot
+namespace RobbyTheRobotTests
 {
     [TestClass]
-    public class TestRobbyTheRobot
+    public class RobbyTheRobotTests
     {
         //Tests constructor
         [TestMethod]
         public void TestCtor()
         {
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(9, 1, 20, 100, 0.5, 0.5, 200, 1, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 0, 20, 100, 0.5, 0.5, 200, 1, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 9, 100, 0.5, 0.5, 200, 1, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 0, 0.5, 0.5, 200, 1, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 1.1, 0.5, 200, 1, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 0.5, -1, 200, 1, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 0.5, 0.5, -1, 1, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 0.5, 0.5, 200, -5, null));
-            var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, 1, null);
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(9, 1, 20, 100, 0.5, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 0, 20, 100, 0.5, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 9, 100, 0.5, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 0, 0.5, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 1.1, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 0.5, -1, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 0.5, 0.5, -1, null));
+            var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, null);
             Assert.AreEqual(200, robby.NumberOfActions);
             Assert.AreEqual(1, robby.NumberOfTestGrids);
             Assert.AreEqual(10, robby.GridSize);
             Assert.AreEqual(100, robby.NumberOfGenerations);
             Assert.AreEqual(0.5, robby.MutationRate);
             Assert.AreEqual(0.5, robby.EliteRate);
-            Assert.AreEqual(200, robby.PopulationSize);
-            Assert.AreEqual(1, robby.NumberOfTrials);
         }
 
         //Determines if generated test grid with even dimensions gives proper can/empty ratio
@@ -38,11 +35,11 @@ namespace TestRobbyTheRobot
         {
             int? seed = null;
 
-            var robby = Robby.CreateRobby(200, 1, 20, 100, 0.5, 0.5, 200, 1, seed);
+            var robby = Robby.CreateRobby(200, 1, 20, 100, 0.5, 0.5, 200, seed);
             var grid = robby.GenerateRandomTestGrid();
             
-            int numOfCans = CountCansInGrid(grid);
-            int numOfEmpties = CountEmptiesInGrid(grid);
+            int numOfCans = CountInGrid(grid, ContentsOfGrid.Can);
+            int numOfEmpties = CountInGrid(grid, ContentsOfGrid.Empty);
             
             //Expects 50% for cans (rounded down if odd gridsize)
             int expectedCans = (int) Math.Floor(robby.GridSize * robby.GridSize * 0.5);
@@ -50,8 +47,6 @@ namespace TestRobbyTheRobot
             //50$ empty from the gridsize (rounds up if odd gridsize)
             int expectedEmpty = (int) Math.Round(robby.GridSize * robby.GridSize * 0.5, MidpointRounding.AwayFromZero);
 
-            Console.WriteLine("CANS: " + numOfCans);
-            Console.WriteLine("EMPTIES: " + numOfEmpties);
             Assert.AreEqual(expectedCans, numOfCans);
             Assert.AreEqual(expectedEmpty, numOfEmpties);
         }
@@ -62,11 +57,11 @@ namespace TestRobbyTheRobot
         {
             int? seed = null;
 
-            var robby = Robby.CreateRobby(200, 1, 21, 100, 0.5, 0.5, 200, 1, seed);
+            var robby = Robby.CreateRobby(200, 1, 21, 100, 0.5, 0.5, 200, seed);
             var grid = robby.GenerateRandomTestGrid();
             
-            int numOfCans = CountCansInGrid(grid);
-            int numOfEmpties = CountEmptiesInGrid(grid);
+            int numOfCans = CountInGrid(grid, ContentsOfGrid.Can);
+            int numOfEmpties = CountInGrid(grid, ContentsOfGrid.Empty);
             
             //Expects 50% for cans (rounded down if odd gridsize)
             int expectedCans = (int) Math.Floor(robby.GridSize * robby.GridSize * 0.5);
@@ -74,8 +69,6 @@ namespace TestRobbyTheRobot
             //50$ empty from the gridsize (rounds up if odd gridsize)
             int expectedEmpty = (int) Math.Round(robby.GridSize * robby.GridSize * 0.5, MidpointRounding.AwayFromZero);
 
-            Console.WriteLine("CANS: " + numOfCans);
-            Console.WriteLine("EMPTIES: " + numOfEmpties);
             Assert.AreEqual(expectedCans, numOfCans);
             Assert.AreEqual(expectedEmpty, numOfEmpties);
         }
@@ -87,12 +80,10 @@ namespace TestRobbyTheRobot
             int? seed = 1;
 
             //create SEEDED robby + gene array
-            var robby = Robby.CreateRobby(200, 3, 10, 100, 0.5, 0.5, 200, 1, seed);
+            var robby = Robby.CreateRobby(200, 3, 10, 100, 0.5, 0.5, 200, seed);
             int[] moves = MockGenerateGeneArray(seed);
             double score = MockComputeFitness(moves, robby, seed);
             
-            Console.WriteLine("FITNESS: " + score);
-            Console.WriteLine("GENES: " + string.Join("", moves));
             Assert.AreEqual(-1000, score);
         }
 
@@ -102,7 +93,7 @@ namespace TestRobbyTheRobot
         {
             int? seed = 1;
 
-            var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, 1, seed);
+            var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, seed);
 
             //automatically create test directory
             string testOutputDirectory = "..\\..\\..\\GenerationsBinSeededTests";
@@ -126,8 +117,7 @@ namespace TestRobbyTheRobot
         {
             int? seed = null;
 
-            var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, 1, seed);
-            robby.FileWrittenEvent += new FileHandler(CatchEvent);
+            var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, seed);
             int eventCallCounter = 0;
             robby.FileWrittenEvent += delegate {
                 eventCallCounter++;
@@ -144,36 +134,14 @@ namespace TestRobbyTheRobot
         }
 
         //Mock functions
-        
-        /// <summary>
-        /// Function that prints to console when event is raised.
-        /// </summary>
-        /// <param>Metadata from Robby.GeneratePossibleSolutions()</param>
-        public static void CatchEvent(string metadata)
-        {
-            Console.WriteLine("Event called!: " + metadata);
-        }
 
-        public static int CountCansInGrid(ContentsOfGrid[,] grid)
+        private int CountInGrid(ContentsOfGrid[,] grid, ContentsOfGrid obj)
         {
             int counter = 0;
+
             foreach(var item in grid)
             {
-                if(item is ContentsOfGrid.Can)
-                {
-                    counter++;
-                }
-            }
-
-            return counter;
-        }
-
-        public static int CountEmptiesInGrid(ContentsOfGrid[,] grid)
-        {
-            int counter = 0;
-            foreach(var item in grid)
-            {
-                if(item is ContentsOfGrid.Empty)
+                if(item == obj)
                 {
                     counter++;
                 }
@@ -187,7 +155,7 @@ namespace TestRobbyTheRobot
         /// int[243].
         /// <param name="seed">Potential random seed</returns>
         /// <returns>int[243] of genes</returns>
-        public static int[] MockGenerateGeneArray(int? seed)
+        private int[] MockGenerateGeneArray(int? seed)
         {
             //generate random SEEDED list of 243 moves
             int[] moves = new int[243];
@@ -208,24 +176,21 @@ namespace TestRobbyTheRobot
         /// <param name="robby">Instance of Robby</param>
         /// <param name="seed">Potential random seed</returns>
         /// <returns>Fitness score for the given chromosome</returns>
-        public static double MockComputeFitness(int[] moves, IRobbyTheRobot robby, int? seed)
+        private double MockComputeFitness(int[] moves, IRobbyTheRobot robby, int? seed)
         {
             Random rand = GenerateRandom(seed);
+
+            ContentsOfGrid[,] testGrid = robby.GenerateRandomTestGrid();
             double score = 0;
+            int posX = 0;
+            int posY = 0;
 
-            for(int testGrids = 0; testGrids < robby.NumberOfTestGrids; testGrids++)
+            for(int move = 0; move < robby.NumberOfActions; move++)
             {
-                ContentsOfGrid[,] testGrid = robby.GenerateRandomTestGrid();
-                int posX = 0;
-                int posY = 0;
-
-                for(int move = 0; move < robby.NumberOfActions; move++)
-                {
-                    score += RobbyHelper.ScoreForAllele(moves, testGrid, rand, ref posX, ref posY);
-                }
+                score += RobbyHelper.ScoreForAllele(moves, testGrid, rand, ref posX, ref posY);
             }
 
-            return (score / robby.NumberOfTestGrids);
+            return score;
         }
 
          /// <summary>
@@ -234,7 +199,7 @@ namespace TestRobbyTheRobot
         /// </summary>
         /// <param name="seed">Potential random seed</returns>
         /// <returns>Random object</returns>
-        private static Random GenerateRandom(int? seed) 
+        private Random GenerateRandom(int? seed) 
         {
             Random rand;
 

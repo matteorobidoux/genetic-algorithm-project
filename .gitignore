@@ -4,8 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Testing Garbage
-/TestRobbyTheRobot/GenerationsBinEventTests/*.txt
-/TestRobbyTheRobot/GenerationsBinSeededTests/*.txt
+/RobbyTheRobotTests/GenerationsBinEventTests/
+/RobbyTheRobotTests/GenerationsBinSeededTests/
 
 coverage.xml
 coveragereport
