@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace RobbyTheRobot
         private double _eliteRate; //between 0 and 1
         private int _populationSize; //number of chromosomes initially (200)
         private int? _potentialSeed; //for making random predictable
+        private Random _rand; //global random object
         public int NumberOfActions {get => _numberOfActions;} //steps for robby
         public int NumberOfTestGrids {get => _numberOfTrials;} //decide myself
         public int GridSize {get => _gridSize;} //constant 10
@@ -76,6 +78,7 @@ namespace RobbyTheRobot
             _eliteRate = eliteRate;
             _populationSize = populationSize;
             _potentialSeed = potentialSeed;
+            _rand = GenerateRandom();
         }
 
         public event FileHandler FileWrittenEvent;
@@ -102,8 +105,8 @@ namespace RobbyTheRobot
                    generationNum == NumberOfGenerations)
                 {
                     IChromosome bestChromosome = currentGen[0]; //IGeneration sorted to have candidate with max fitness as index 0.
-                    string candidate = currentGen.MaxFitness + ";" + NumberOfActions + ";" + string.Join("", bestChromosome.Genes);
-                    WriteToFile(folderPath + $"\\generation{generationNum}.txt", candidate);
+                    string candidate = currentGen.MaxFitness + "," + NumberOfActions + "," + string.Join(",", bestChromosome.Genes);
+                    WriteToFile(folderPath + $"/generation{generationNum}.txt", candidate);
 
                     if(FileWrittenEvent != null)
                     {
@@ -130,81 +133,73 @@ namespace RobbyTheRobot
 
         public ContentsOfGrid[,] GenerateRandomTestGrid()
         {
-            Random rand = GenerateRandom();
-
             ContentsOfGrid[,] grid = new ContentsOfGrid[GridSize, GridSize];
-
-            //Instantiate grid with empty 
-            for (int x = 0; x < grid.GetLength(0); x++)
-                {
-                    for (int y = 0; y < grid.GetLength(1); y++)
-                    {
-                        grid[x, y] = ContentsOfGrid.Empty;
-                    }
-                }
-
-            //Replace empty with cans randomly
-            int cans = 0;
             int expectedFiftyPercent = (int) Math.Floor(GridSize * GridSize * 0.5);
-            do
+            HashSet<int> indexesForCans = GenerateRandomCanIndexes(expectedFiftyPercent);
+            int counterIndexForCans = 0;
+
+            for(int x = 0; x < grid.GetLength(0); x++)
             {
-                for (int x = 0; x < grid.GetLength(0); x++)
+                for(int y = 0; y < grid.GetLength(1); y++)
                 {
-                    if(cans == expectedFiftyPercent)
+                    if(indexesForCans.Contains(counterIndexForCans))
                     {
-                        break;
+                        grid[x,y] = ContentsOfGrid.Can;
                     }
 
-                    for (int y = 0; y < grid.GetLength(1); y++)
+                    else
                     {
-                        if(cans == expectedFiftyPercent)
-                        {
-                            break;
-                        }
-
-                        int randCont = rand.Next(0, 2);
-                        ContentsOfGrid cont = (ContentsOfGrid) randCont;
-
-                        if(cont == ContentsOfGrid.Can && grid[x,y] == ContentsOfGrid.Empty && cans < expectedFiftyPercent)
-                        {
-                            grid[x,y] = cont;
-                            cans++;
-                        }
-
-                        else 
-                        {
-                            continue;
-                        }
+                        grid[x,y] = ContentsOfGrid.Empty;
                     }
+
+                    counterIndexForCans++;
                 }
-
-            } while (cans < expectedFiftyPercent);
+            }
 
             return grid;
         }
 
         /// <summary>
+        /// Generates a random HashSet containing the indexes
+        /// at which a can will placed in a random test grid.
+        /// </summary>
+        /// <param name="numOfIndexes">Specifies the number of random indexes to generate</param>
+        private HashSet<int> GenerateRandomCanIndexes(int numOfIndexes)
+        {
+            HashSet<int> indexes = new HashSet<int>(numOfIndexes);
+            int counter = 0;
+
+            while(counter < numOfIndexes)
+            {
+                int add = _rand.Next(0, numOfIndexes);
+                if(indexes.Add(add))
+                {
+                    indexes.Add(add);
+                    counter++;
+                }
+            }
+
+            return indexes;
+        }
+
+        /// <summary>
         /// This function computes the fitness of a chromosome for a given random 
-        /// of TestGrid. If NumberOfTestGrids above 1, it loops for the given amount of test grids, 
-        /// generating a new random test grid for each iteration.
-        /// It then computes the score for a given number of actions (moves) that Robby can do on the grid(s)
-        /// and returns a double.
+        /// of TestGrid. It then computes the score for a given number of actions (moves) 
+        /// that Robby can do on the grid and returns a double.
         /// </summary>
         /// <param name="moves">IChoromosome, containing gene list of 243 genes (moves)</param>
         /// <param name="generation">Currrent generation</param>
         /// <returns>Fitness score for the given chromosome</returns>
         private double ComputeFitness(IChromosome chromosome, IGeneration generation)
         {
-            Random rand = GenerateRandom();
-
             ContentsOfGrid[,] testGrid = GenerateRandomTestGrid();
             double score = 0;
-            int posX = 0;
-            int posY = 0;
+            int posX = _rand.Next(0, GridSize);
+            int posY = _rand.Next(0, GridSize);
 
             for(int move = 0; move < NumberOfActions; move++)
             {
-                score += RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
+                score += RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, _rand, ref posX, ref posY);
             }
         
             return score;

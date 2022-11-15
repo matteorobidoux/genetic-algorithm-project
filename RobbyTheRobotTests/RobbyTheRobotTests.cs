@@ -1,7 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RobbyTheRobot;
 using System;
-using GeneticAlgorithm;
 using System.IO;
 
 namespace RobbyTheRobotTests
@@ -73,42 +72,28 @@ namespace RobbyTheRobotTests
             Assert.AreEqual(expectedEmpty, numOfEmpties);
         }
 
-        //Expects Robby's fitness for one chromosome on 3 test grids to be -3000. (seeded)
-        [TestMethod]
-        public void TestComputeFitnessSeeded()
-        {
-            int? seed = 1;
-
-            //create SEEDED robby + gene array
-            var robby = Robby.CreateRobby(200, 3, 10, 100, 0.5, 0.5, 200, seed);
-            int[] moves = MockGenerateGeneArray(seed);
-            double score = MockComputeFitness(moves, robby, seed);
-            
-            Assert.AreEqual(-1000, score);
-        }
-
         //Expects files written to disk to output consistent results. (seeded)
         [TestMethod]
         public void TestGeneratePossibleSolutionsSeeded()
         {
             int? seed = 1;
 
-            var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, seed);
+            var robby = Robby.CreateRobby(200, 1, 10, 10, 0.5, 0.5, 200, seed);
 
             //automatically create test directory
-            string testOutputDirectory = "..\\..\\..\\GenerationsBinSeededTests";
+            string testOutputDirectory = "../../../GenerationsBinSeededTests";
             Directory.CreateDirectory(testOutputDirectory);
 
             //write file in ./TestRobbyTheRobot/GenerationBinTests/
             robby.GeneratePossibleSolutions(testOutputDirectory);
 
-            string expectedOutputForGen1 = "0;200;103543260401264414446012515256354065603316423443123124216063400102326651013625603203222045550061632002323201135105626454634100002106356054602151044103114414422316602542563255255302260566264233226224516221063513511011610335433662602045203640234";
-            string expectedOutputForGen20 = "10;200;524643255401363434440613532450603105603026422043142624215063632202331631064022411500025055500111642002020451115125341160634140001106636024152151044205134214622356502532623253155262220366364333420624514421063553411011216366431553605041203640262";
-            string expectedOutputForGen100 = "10;200;524643255401363434440613532450603105603026422043142624215063632202331631064022411500025055500111642002020451115125341160634140001106636024152151044205134214622356502532623253155262220366364333420624514421063553411011216366431553605041203640262";
+            string expectedOutputForGen1 = "0,200,1,0,3,5,4,3,2,6,0,4,0,1,2,6,4,4,1,4,4,4,6,0,1,2,5,1,5,2,5,6,3,5,4,0,6,5,6,0,3,3,1,6,4,2,3,4,4,3,1,2,3,1,2,4,2,1,6,0,6,3,4,0,0,1,0,2,3,2,6,6,5,1,0,1,3,6,2,5,6,0,3,2,0,3,2,2,2,0,4,5,5,5,0,0,6,1,6,3,2,0,0,2,3,2,3,2,0,1,1,3,5,1,0,5,6,2,6,4,5,4,6,3,4,1,0,0,0,0,2,1,0,6,3,5,6,0,5,4,6,0,2,1,5,1,0,4,4,1,0,3,1,1,4,4,1,4,4,2,2,3,1,6,6,0,2,5,4,2,5,6,3,2,5,5,2,5,5,3,0,2,2,6,0,5,6,6,2,6,4,2,3,3,2,2,6,2,2,4,5,1,6,2,2,1,0,6,3,5,1,3,5,1,1,0,1,1,6,1,0,3,3,5,4,3,3,6,6,2,6,0,2,0,4,5,2,0,3,6,4,0,2,3,4";
+            string expectedOutputForAllGens = "10,200,0,0,3,1,4,4,2,1,5,4,0,6,2,6,4,4,1,2,1,6,0,3,1,0,5,1,0,2,5,6,3,2,3,0,5,5,6,0,3,3,0,0,5,5,3,5,4,0,1,2,3,1,2,4,5,2,6,0,2,5,4,0,0,1,0,6,0,5,6,1,0,1,3,1,2,6,2,5,4,2,3,2,4,3,6,2,2,3,1,4,2,3,2,3,6,1,6,5,1,0,0,6,5,3,6,2,6,1,2,1,3,1,0,5,6,2,2,4,5,0,6,3,0,4,5,0,0,0,6,1,0,4,3,5,6,0,5,4,1,0,1,1,2,1,0,4,4,4,2,3,1,1,4,4,1,1,4,6,2,2,1,6,6,4,2,5,3,2,5,2,3,6,4,5,2,4,5,3,0,4,5,6,4,5,6,6,2,4,1,2,6,3,0,2,3,2,2,0,5,1,3,3,3,4,3,6,4,4,1,3,2,0,1,2,1,1,4,1,0,6,3,3,0,0,6,3,1,2,4,0,2,0,4,5,2,0,3,6,4,6,2,3,5";
 
-            Assert.AreEqual(expectedOutputForGen1, File.ReadAllText($"{testOutputDirectory}\\generation1.txt"));
-            Assert.AreEqual(expectedOutputForGen20, File.ReadAllText($"{testOutputDirectory}\\generation20.txt"));
-            Assert.AreEqual(expectedOutputForGen100, File.ReadAllText($"{testOutputDirectory}\\generation100.txt"));
+            Assert.AreEqual(expectedOutputForGen1, File.ReadAllText($"{testOutputDirectory}/generation1.txt"));
+            Assert.AreEqual(expectedOutputForAllGens, File.ReadAllText($"{testOutputDirectory}/generation2.txt"));
+            Assert.AreEqual(expectedOutputForAllGens, File.ReadAllText($"{testOutputDirectory}/generation5.txt"));
+            Assert.AreEqual(expectedOutputForAllGens, File.ReadAllText($"{testOutputDirectory}/generation10.txt"));
         }
 
         //Expects the event to be raised 6 times for 100 generations. (not seeded)
@@ -124,7 +109,7 @@ namespace RobbyTheRobotTests
             };
 
             //automatically create test directory
-            string testOutputDirectory = "..\\..\\..\\GenerationsBinEventTests";
+            string testOutputDirectory = "../../../GenerationsBinEventTests";
             Directory.CreateDirectory(testOutputDirectory);
 
             //write file in ./TestRobbyTheRobot/GenerationBinTests/
@@ -133,8 +118,15 @@ namespace RobbyTheRobotTests
             Assert.AreEqual(6, eventCallCounter);
         }
 
-        //Mock functions
+        //Tests an invalid path when trying to GeneratePossibleSolutions()
+        [TestMethod]
+        public void TestInvalidPathForGeneratingSolutions()
+        {
+            var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200);
+            Assert.ThrowsException<ApplicationException>(() => robby.GeneratePossibleSolutions("../../../Blah"));
+        }
 
+        //helper functions
         private int CountInGrid(ContentsOfGrid[,] grid, ContentsOfGrid obj)
         {
             int counter = 0;
@@ -150,50 +142,7 @@ namespace RobbyTheRobotTests
             return counter;
         }
 
-        /// <summary> 
-        /// Mocks an IChromosome int[] genes by generating a random or non-random
-        /// int[243].
-        /// <param name="seed">Potential random seed</returns>
-        /// <returns>int[243] of genes</returns>
-        private int[] MockGenerateGeneArray(int? seed)
-        {
-            //generate random SEEDED list of 243 moves
-            int[] moves = new int[243];
-            Random rand = GenerateRandom(seed);
-            for (int i = 0; i < moves.Length; i++)
-            {
-                moves[i] = rand.Next(0, 7);
-            }
-
-            return moves;
-        }
-
         /// <summary>
-        /// Testing function of ComputeFitness() that only takes a random int[] of genes.
-        /// IChromosome not required.
-        /// </summary>
-        /// <param name="moves">Gene array of moves</param>
-        /// <param name="robby">Instance of Robby</param>
-        /// <param name="seed">Potential random seed</returns>
-        /// <returns>Fitness score for the given chromosome</returns>
-        private double MockComputeFitness(int[] moves, IRobbyTheRobot robby, int? seed)
-        {
-            Random rand = GenerateRandom(seed);
-
-            ContentsOfGrid[,] testGrid = robby.GenerateRandomTestGrid();
-            double score = 0;
-            int posX = 0;
-            int posY = 0;
-
-            for(int move = 0; move < robby.NumberOfActions; move++)
-            {
-                score += RobbyHelper.ScoreForAllele(moves, testGrid, rand, ref posX, ref posY);
-            }
-
-            return score;
-        }
-
-         /// <summary>
         /// This function simply returns an instance of a Random object
         /// given a seed or not.
         /// </summary>
