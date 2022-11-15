@@ -117,8 +117,8 @@ namespace RobbyVisualizer
             _spriteBatch.Draw(_background, new Rectangle(0,0,1950, 1125),Color.White);
             if(_moves != null){
                 _spriteBatch.DrawString(_infoFontSprite, $"Generation: {_moves[0]}", new Vector2(470, 820), Color.White);
-                _spriteBatch.DrawString(_infoFontSprite, $"Move: {_numOfMoves}/{_moves[1]}", new Vector2(470, 855), Color.White);
-                _spriteBatch.DrawString(_infoFontSprite, $"Points: /{_moves[2]}", new Vector2(470, 890), Color.White);
+                _spriteBatch.DrawString(_infoFontSprite, $"Move: {_numOfMoves}/{_moves[2]}", new Vector2(470, 855), Color.White);
+                _spriteBatch.DrawString(_infoFontSprite, $"Points: /{_moves[1]}", new Vector2(470, 890), Color.White);
             }
             _spriteBatch.End();
             // TODO: Add your drawing code here
@@ -129,16 +129,20 @@ namespace RobbyVisualizer
             var task = new Task(() => {
                 foreach(string file in _buttonSprite.Files){
                     _moves = System.IO.File.ReadAllText(file).Split(",");
-                    for(int i = 3; i < Int32.Parse(_moves[1])+3; i++){
-                        if(_moves[i] == "1" && _cookieMonster.YPosition - 78 >= 20){
+                    for(int i = 3; i < Int32.Parse(_moves[2])+3; i++){
+                        if(_moves[i] == "0" && _cookieMonster.YPosition - 78 >= 20){
                             _cookieMonster.YPosition -= 78;
-                        } else if(_moves[i] == "2" && _cookieMonster.YPosition + 78 <= 722){
+                        } else if(_moves[i] == "1" && _cookieMonster.YPosition + 78 <= 722){
                         _cookieMonster.YPosition += 78;
+                        } else if(_moves[i] == "2" && _cookieMonster.XPosition + 78 <= 1162){
+                            _cookieMonster.XPosition += 78;
                         } else if(_moves[i] == "3" && _cookieMonster.XPosition - 78 >= 460){
                             _cookieMonster.XPosition -= 78;
-                        } else if(_moves[i] == "4" && _cookieMonster.XPosition + 78 <= 1162){
-                            _cookieMonster.XPosition += 78;
-                        }
+                        } else if(_moves[i] == "5"){
+                            _cookieMonster.Eating = true;
+                        } else if(_moves[i] == "6"){
+                            
+                        } 
                         Thread.Sleep(500);
                         _numOfMoves++;
                     }
@@ -156,9 +160,8 @@ namespace RobbyVisualizer
             for(int i =0; i< _cookies.GetLength(0); i++){
                 for(int j =0; j< _cookies.GetLength(1); j++){
                     if( _cookies[i,j] != null){
-                        if(_cookieMonster.XPosition == _cookies[i,j].XPosition && _cookieMonster.YPosition == _cookies[i,j].YPosition){
+                        if(_cookieMonster.XPosition == _cookies[i,j].XPosition && _cookieMonster.YPosition == _cookies[i,j].YPosition && _cookieMonster.Eating == true){
                             if(_cookies[i,j].IsVisible && _run){
-                                _cookieMonster.Eating = true;
                                 MediaPlayer.Play(_eatingCookie);
                                 _cookies[i,j].IsVisible = false;
                             }
