@@ -19,7 +19,6 @@ namespace RobbyTheRobot
         private double _eliteRate; //between 0 and 1
         private int _populationSize; //number of chromosomes initially (200)
         private int? _potentialSeed; //for making random predictable
-        private Random _rand; //global random object
         public int NumberOfActions {get => _numberOfActions;} //steps for robby
         public int NumberOfTestGrids {get => _numberOfTrials;} //decide myself
         public int GridSize {get => _gridSize;} //constant 10
@@ -78,7 +77,6 @@ namespace RobbyTheRobot
             _eliteRate = eliteRate;
             _populationSize = populationSize;
             _potentialSeed = potentialSeed;
-            _rand = GenerateRandom();
         }
 
         public event FileHandler FileWrittenEvent;
@@ -119,16 +117,13 @@ namespace RobbyTheRobot
 
         /// <summary>
         /// Helper function to write files to disk provided a path and text.
-        /// Runs in a separate Thread.
+        /// Runs in a separate Thread. If file exists, it is overriden.
         /// </summary>
         /// <param name="path">Path to where the file will be written</param>
         /// <param name="text">Input string to store in the File</param>
         private void WriteToFile(string path, string text)
         {
-            if(!File.Exists(path))
-            {
-                Task.Run(() => File.WriteAllText(path, text, Encoding.UTF8));
-            }
+            Task.Run(() => File.WriteAllText(path, text, Encoding.UTF8));
         }
 
         public ContentsOfGrid[,] GenerateRandomTestGrid()
@@ -138,18 +133,18 @@ namespace RobbyTheRobot
             HashSet<int> indexesForCans = GenerateRandomCanIndexes(expectedFiftyPercent);
             int counterIndexForCans = 0;
 
-            for(int x = 0; x < grid.GetLength(0); x++)
+            for(int y = 0; y < grid.GetLength(0); y++)
             {
-                for(int y = 0; y < grid.GetLength(1); y++)
+                for(int x = 0; x < grid.GetLength(1); x++)
                 {
                     if(indexesForCans.Contains(counterIndexForCans))
                     {
-                        grid[x,y] = ContentsOfGrid.Can;
+                        grid[y,x] = ContentsOfGrid.Can;
                     }
 
                     else
                     {
-                        grid[x,y] = ContentsOfGrid.Empty;
+                        grid[y,x] = ContentsOfGrid.Empty;
                     }
 
                     counterIndexForCans++;
@@ -166,17 +161,14 @@ namespace RobbyTheRobot
         /// <param name="numOfIndexes">Specifies the number of random indexes to generate</param>
         private HashSet<int> GenerateRandomCanIndexes(int numOfIndexes)
         {
+            Random rand = GenerateRandom();
+            
             HashSet<int> indexes = new HashSet<int>(numOfIndexes);
-            int counter = 0;
 
-            while(counter < numOfIndexes)
+            while(indexes.Count < numOfIndexes)
             {
-                int add = _rand.Next(0, numOfIndexes);
-                if(indexes.Add(add))
-                {
-                    indexes.Add(add);
-                    counter++;
-                }
+                int add = rand.Next(0, numOfIndexes);
+                indexes.Add(add);
             }
 
             return indexes;
@@ -192,14 +184,16 @@ namespace RobbyTheRobot
         /// <returns>Fitness score for the given chromosome</returns>
         private double ComputeFitness(IChromosome chromosome, IGeneration generation)
         {
+            Random rand = GenerateRandom();
+
             ContentsOfGrid[,] testGrid = GenerateRandomTestGrid();
             double score = 0;
-            int posX = _rand.Next(0, GridSize);
-            int posY = _rand.Next(0, GridSize);
+            int posX = rand.Next(0, GridSize);
+            int posY = rand.Next(0, GridSize);
 
             for(int move = 0; move < NumberOfActions; move++)
             {
-                score += RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, _rand, ref posX, ref posY);
+                score += RobbyHelper.ScoreForAllele(chromosome.Genes, testGrid, rand, ref posX, ref posY);
             }
         
             return score;
