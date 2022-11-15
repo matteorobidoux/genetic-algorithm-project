@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Testing Garbage
+/RobbyTheRobotTests/GenerationsBinEventTests/
+/RobbyTheRobotTests/GenerationsBinSeededTests/
+
 coverage.xml
 coveragereport
 .vscode
