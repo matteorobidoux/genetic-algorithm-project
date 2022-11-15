@@ -103,14 +103,8 @@ namespace RobbyTheRobot
                    generationNum == NumberOfGenerations)
                 {
                     IChromosome bestChromosome = currentGen[0]; //IGeneration sorted to have candidate with max fitness as index 0.
-                    string candidate = currentGen.MaxFitness + "," + NumberOfActions + "," + string.Join(",", bestChromosome.Genes);
-                    WriteToFile(folderPath + $"/generation{generationNum}.txt", candidate);
-
-                    if(FileWrittenEvent != null)
-                    {
-                        string metadata = $"Generation #{generationNum} successfully written to disk.";
-                        FileWrittenEvent(metadata);
-                    }
+                    string candidate = generationNum + "," + currentGen.MaxFitness + "," + NumberOfActions + "," + string.Join(",", bestChromosome.Genes);
+                    WriteToFile(folderPath + $"/generation{generationNum}.txt", candidate, generationNum);
                 }
             }
         }
@@ -121,9 +115,16 @@ namespace RobbyTheRobot
         /// </summary>
         /// <param name="path">Path to where the file will be written</param>
         /// <param name="text">Input string to store in the File</param>
-        private void WriteToFile(string path, string text)
+        private void WriteToFile(string path, string text, int generationNum)
         {
-            Task.Run(() => File.WriteAllText(path, text, Encoding.UTF8));
+            Task.Run(() => {
+                File.WriteAllText(path, text, Encoding.UTF8);
+                if(FileWrittenEvent != null)
+                    {
+                        string metadata = $"Generation #{generationNum} successfully written to disk.";
+                        FileWrittenEvent(metadata);
+                    }
+                });
         }
 
         public ContentsOfGrid[,] GenerateRandomTestGrid()
