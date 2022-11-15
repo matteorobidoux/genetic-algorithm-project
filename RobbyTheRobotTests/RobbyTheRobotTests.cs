@@ -13,13 +13,13 @@ namespace RobbyTheRobotTests
         [TestMethod]
         public void TestCtor()
         {
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(9, 1, 20, 100, 0.5, 0.5, 200, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 0, 20, 100, 0.5, 0.5, 200, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 9, 100, 0.5, 0.5, 200, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 0, 0.5, 0.5, 200, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 1.1, 0.5, 200, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 0.5, -1, 200, null));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new RobbyTheRobot.RobbyTheRobot(200, 1, 20, 100, 0.5, 0.5, -1, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(9, 1, 20, 100, 0.5, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 0, 20, 100, 0.5, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 9, 100, 0.5, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 20, 0, 0.5, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 20, 100, 1.1, 0.5, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 20, 100, 0.5, -1, 200, null));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 20, 100, 0.5, 0.5, -1, null));
             var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, null);
             Assert.AreEqual(200, robby.NumberOfActions);
             Assert.AreEqual(1, robby.NumberOfTestGrids);
