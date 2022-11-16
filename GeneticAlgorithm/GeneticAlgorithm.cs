@@ -94,8 +94,6 @@ namespace GeneticAlgorithm
       }
       Generation eliteGen = new Generation(elites, _currentGeneration);
       //Fill the remaining population with children
-      var stopwatch = new Stopwatch();
-      stopwatch.Start();
       Parallel.For(elites.Length, PopulationSize - 1, i => {
         if (i % 2 == PopulationSize % 2)
         {
@@ -114,8 +112,6 @@ namespace GeneticAlgorithm
           nextGeneration[i + 1] = children[1];
         }
       });
-      stopwatch.Stop();
-      System.Console.WriteLine(stopwatch.Elapsed);
 
       return new Generation(nextGeneration, _currentGeneration);
     }
