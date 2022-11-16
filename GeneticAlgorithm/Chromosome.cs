@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Linq;
+using System.Diagnostics;
 
 namespace GeneticAlgorithm
 {
@@ -22,14 +23,8 @@ namespace GeneticAlgorithm
       }
       internal set
       {
-        if (index < 0 || index >= Length) 
-        {
-          throw new IndexOutOfRangeException($"Invalid index for gene. Expected between 0 and {Length}. Got: {index}");
-        }
-        if (value < 0 || value > _lengthOfGenes)
-        {
-          throw new ArgumentOutOfRangeException($"Invalid gene length. Expected between 0 and {_lengthOfGenes}. Got: {value}");
-        }
+        Debug.Assert(index >= 0 && index < Length, "Please tell me you remember how indexes work?");
+        Debug.Assert(value >= 0 && value < _lengthOfGenes, "Your new gene value must conform to the gene length");
         _genes[index] = value;
       }
     }
@@ -42,14 +37,8 @@ namespace GeneticAlgorithm
 
     internal Chromosome(int numGenes, int lengthOfGenes, int? seed = null) 
     {
-      if(numGenes <= 0) 
-      {
-        throw new ArgumentOutOfRangeException($"The number of genes must be a positive integer. Got: {numGenes}");
-      }
-      if (lengthOfGenes <= 0)
-      {
-        throw new ArgumentOutOfRangeException($"The length of a gene must be a positive integer. Got: {lengthOfGenes}");
-      }
+      Debug.Assert(numGenes > 0, "You messed up when constructing the number of genes");
+      Debug.Assert(lengthOfGenes > 0, "You need a longer length of gene");
       _seed = seed;
       Random rand = GetRandomObj();
       _lengthOfGenes = lengthOfGenes;
@@ -71,6 +60,8 @@ namespace GeneticAlgorithm
 
     internal Chromosome(int[] genes, int lengthOfGenes, int? seed = null)
     {
+      Debug.Assert(genes != null, "You can't give null genes");
+      Debug.Assert(lengthOfGenes > 0, "Copying still needs good gene lengths");
       _seed = seed;
       _lengthOfGenes = lengthOfGenes;
       _genes = genes.ToArray();
@@ -93,6 +84,8 @@ namespace GeneticAlgorithm
       {
         throw new ArgumentOutOfRangeException($"Invalid mutationProb. Expected value between 0 and 1. Got: {mutationProb}");
       }
+      Debug.Assert(_genes != null, "How did this even happen?");
+      Debug.Assert(_lengthOfGenes >= 0, "How did this even happen?");
       Chromosome parent = spouse as Chromosome;
       Chromosome[] children = new Chromosome[]{new Chromosome(_genes, _lengthOfGenes, _seed), 
       new Chromosome(parent._genes, parent._lengthOfGenes, parent._seed)};
@@ -102,6 +95,7 @@ namespace GeneticAlgorithm
       int end = rand.Next(start, (int)Length);
       Cross(children[0], children[1], start, end);
       Mutate(children, mutationProb);
+      Debug.Assert(children.Length == 2, "I have no idea how it isn't 2");
 
       return children;
     }
@@ -112,6 +106,9 @@ namespace GeneticAlgorithm
     // </summary>
     private void Mutate(Chromosome[] children, double mutationProb)
     {
+      Debug.Assert(children != null, "Gotta have children to mutate");
+      Debug.Assert(mutationProb >= 0 && mutationProb <= 1, "Your mutation chance is wrong");
+      Debug.Assert(_genes != null, "How did this even happen?");
       Random rand = GetRandomObj();
       for (int i = 0; i < Length; i++)
       {
@@ -132,6 +129,8 @@ namespace GeneticAlgorithm
     // </summary>
     private void Cross(Chromosome childA, Chromosome childB, int start, int end)
     {
+      Debug.Assert(start <= end, "You may have accidentally swapped the two points");
+      Debug.Assert(childA != null & childB != null, "Neither of the children can be null");
       for (int i = start; i <= end; i++) {
         int temp = childA[i];
         childA[i] = childB[i];

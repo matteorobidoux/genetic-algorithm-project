@@ -10,17 +10,6 @@ namespace GeneticAlgorithmTests
     [TestMethod]
     public void TestCtor()
     {
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(0, 10, 7, .5, .5, 10, MockCalcFitness, 0);});
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(10, 0, 7, .5, .5, 10, MockCalcFitness, 0);});
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(10, 10, 0, .5, .5, 10, MockCalcFitness, 0);});
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(10, 10, 7, -1, .5, 10, MockCalcFitness, 0);});
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(10, 10, 7, 1.1, .5, 10, MockCalcFitness, 0);});
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(10, 10, 7, .5, -1, 10, MockCalcFitness, 0);});
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(10, 10, 7, .5, 1.1, 10, MockCalcFitness, 0);});
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(10, 10, 7, .5, .5, 0, MockCalcFitness, 0);});
-      Assert.ThrowsException<ArgumentNullException>(() => {new GeneticAlgorithm.GeneticAlgorithm(10, 10, 7, .5, .5, 10, null, 0);});
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(10, 10, 7, .5, .19, 10, MockCalcFitness, 0);});
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => {new GeneticAlgorithm.GeneticAlgorithm(11, 10, 7, .5, .19, 10, MockCalcFitness, 0);});
       var alg = new GeneticAlgorithm.GeneticAlgorithm(10, 10, 7, .5, .5, 10, MockCalcFitness, 0);
       Assert.AreEqual(10, alg.PopulationSize);
       Assert.AreEqual(10, alg.NumberOfGenes);
@@ -241,7 +230,7 @@ namespace GeneticAlgorithmTests
     private int _mockCount;
     private double MockCalcFitnessBad(IChromosome chromosome, IGeneration generation)
     {
-      return _mockCount++ <= 55? 1 : 0;
+      return _mockCount++ < 5? 1 : 0;
     }
   }
 
