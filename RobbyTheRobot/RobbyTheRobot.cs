@@ -113,7 +113,7 @@ namespace RobbyTheRobot
     {
       ContentsOfGrid[,] grid = new ContentsOfGrid[GridSize, GridSize];
       int expectedFiftyPercent = (int)Math.Floor(GridSize * GridSize * 0.5);
-      HashSet<int> indexesForCans = GenerateRandomCanIndexes(expectedFiftyPercent);
+      HashSet<int> indexesForCans = GenerateRandomCanIndexes(expectedFiftyPercent, GridSize * GridSize);
       Debug.Assert(indexesForCans.Count == expectedFiftyPercent, "How are they not the same?");
       int counterIndexForCans = 0;
 
@@ -144,7 +144,7 @@ namespace RobbyTheRobot
     /// at which a can will placed in a random test grid.
     /// </summary>
     /// <param name="numOfIndexes">Specifies the number of random indexes to generate</param>
-    private HashSet<int> GenerateRandomCanIndexes(int numOfIndexes)
+    private HashSet<int> GenerateRandomCanIndexes(int numOfIndexes, int range)
     {
       Random rand = GenerateRandom();
 
@@ -152,7 +152,7 @@ namespace RobbyTheRobot
 
       while (indexes.Count < numOfIndexes)
       {
-        int add = rand.Next(0, numOfIndexes);
+        int add = rand.Next(0, range);
         indexes.Add(add);
       }
 
