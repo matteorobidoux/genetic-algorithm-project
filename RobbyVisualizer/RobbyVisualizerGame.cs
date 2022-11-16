@@ -29,8 +29,12 @@ namespace RobbyVisualizer
         private ContentsOfGrid[,] _contentGrid;
         private int _baseX;
         private int _baseY;
-        private int _sizeIncrement;
+        private int _sizeChange;
         private bool _displayNewGrid;
+        private Random rand;
+        private int _xStarting;
+        private int _yStarting;
+        private double _points;
 
         public RobbyVisualizerGame()
         {
@@ -44,9 +48,10 @@ namespace RobbyVisualizer
             _contentGrid =  _robby.GenerateRandomTestGrid();
             _baseX = 470;
             _baseY = 30;
-            _sizeIncrement = 78;
+            _sizeChange = 78;
             _displayNewGrid = true;
-
+            rand = new Random();
+            _points = 0;
 
         }
 
@@ -75,10 +80,10 @@ namespace RobbyVisualizer
                     _grid[i, j] = gridUnit;
                     Components.Add(gridUnit);
 
-                    xPos += _sizeIncrement;
+                    xPos += _sizeChange;
                 }
                 xPos = _baseX;
-                yPos += _sizeIncrement;
+                yPos += _sizeChange;
             }           
 
             _buttonSprite = new ButtonSprite(this, 650, 930);
@@ -113,8 +118,10 @@ namespace RobbyVisualizer
                         }
                     }
                 }
-                // Moving square to square is -10 x and -10 y
-                _cookieMonster = new CookieMonsterSprite(this, _baseX - 10, _baseY - 10);
+
+                _yStarting = rand.Next(0,10);
+                _xStarting = rand.Next(0,10);
+                _cookieMonster = new CookieMonsterSprite(this, _grid[_yStarting,_xStarting].XPosition - 10, _grid[_yStarting,_xStarting].YPosition - 10);
                 Components.Add(_cookieMonster);
                 _displayNewGrid = false;
             }
@@ -140,7 +147,7 @@ namespace RobbyVisualizer
             if(_fileDetails != null){
                 _spriteBatch.DrawString(_infoFontSprite, $"Generation: {_fileDetails[0]}", new Vector2(470, 820), Color.White);
                 _spriteBatch.DrawString(_infoFontSprite, $"Move: {_numOfMoves}/{_fileDetails[2]}", new Vector2(470, 855), Color.White);
-                _spriteBatch.DrawString(_infoFontSprite, $"Points: /{_fileDetails[1]}", new Vector2(470, 890), Color.White);
+                _spriteBatch.DrawString(_infoFontSprite, $"Points: {_points}/{_fileDetails[1]}", new Vector2(470, 890), Color.White);
             }
             _spriteBatch.End();
             // TODO: Add your drawing code here
@@ -155,26 +162,28 @@ namespace RobbyVisualizer
                     for(int i = 3; i < _fileDetails.Length; i++){
                         moves[i-3] = Convert.ToInt32(_fileDetails[i]);
                     }
-                    int xPosition = 1;
-                    int yPosition = 1;
+
+                    int previousX = _xStarting;
+                    int previousY = _yStarting;
 
                     for(int i = 3; i < Int32.Parse(_fileDetails[2])+3; i++){
-                        RobbyHelper.ScoreForAllele(moves,_contentGrid, new Random(),ref xPosition, ref yPosition);
-                        _cookieMonster.XPosition = xPosition * _sizeIncrement;
-                        _cookieMonster.YPosition = yPosition * _sizeIncrement;
-                        // if(_moves[i] == "0" && _cookieMonster.YPosition - 78 >= 20){
-                        //     _cookieMonster.YPosition -= 78;
-                        // } else if(_moves[i] == "1" && _cookieMonster.YPosition + 78 <= 722){
-                        // _cookieMonster.YPosition += 78;
-                        // } else if(_moves[i] == "2" && _cookieMonster.XPosition + 78 <= 1162){
-                        //     _cookieMonster.XPosition += 78;
-                        // } else if(_moves[i] == "3" && _cookieMonster.XPosition - 78 >= 460){
-                        //     _cookieMonster.XPosition -= 78;
-                        // } else if(_moves[i] == "5"){
-                        //     _cookieMonster.Eating = true;
-                        // } else if(_moves[i] == "6"){
-                            
-                        // } 
+                        _points += RobbyHelper.ScoreForAllele(moves,_contentGrid, new Random(),ref _xStarting, ref _yStarting);
+                        
+                        if(previousX > _xStarting){
+                            _cookieMonster.XPosition -= _sizeChange;
+                        } else if(previousX < _xStarting){
+                            _cookieMonster.XPosition += _sizeChange;
+                        }
+
+                        if(previousY > _yStarting){
+                            _cookieMonster.YPosition -= _sizeChange;
+                        } else if(previousY < _yStarting){
+                            _cookieMonster.YPosition += _sizeChange;
+                        }
+
+                        previousX = _xStarting;
+                        previousY = _yStarting;
+    
                         Thread.Sleep(500);
                         _numOfMoves++;
                     }
