@@ -56,10 +56,9 @@ namespace GeneticAlgorithm
       _seed = seed;
       _alg = alg;
       _generation = new Chromosome[_alg.PopulationSize];
-      for (int i = 0; i < NumberOfChromosomes; i++)
-      {
+      Parallel.For(0, NumberOfChromosomes, i => {
         _generation[i] = new Chromosome(_alg.NumberOfGenes, _alg.LengthOfGene, _seed);
-      }
+      });
     }
 
     internal Generation(IChromosome[] chromosomes, Generation generation)
