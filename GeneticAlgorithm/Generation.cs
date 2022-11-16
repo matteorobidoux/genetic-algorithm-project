@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GeneticAlgorithm
 {
@@ -21,9 +23,29 @@ namespace GeneticAlgorithm
       }
     }
 
-    public double AverageFitness { get; private set; }
+    private double? _averageFitness;
+    public double AverageFitness { 
+      get 
+      {
+        if (_averageFitness == null)
+        {
+          _averageFitness = _generation.Average<Chromosome>((chromosome) => {return chromosome.Fitness;});
+        }
+        return (double)_averageFitness;
+      }
+    }
 
-    public double MaxFitness { get; private set; }
+    private double? _maxFitness;
+    public double MaxFitness { 
+      get
+      {
+        if (_maxFitness == null)
+        {
+          _maxFitness = _generation.Max<Chromosome>((chromosome) => {return chromosome.Fitness;});
+        }
+        return (double)_maxFitness;
+      }
+    }
     public long NumberOfChromosomes { get => _generation.Length; }
 
     internal Generation(IGeneticAlgorithm alg, FitnessEventHandler fitnessCalc, int? seed = null)
@@ -50,39 +72,18 @@ namespace GeneticAlgorithm
       _seed = generation._seed;
       _alg = generation._alg;
       _generation = chromosomes as Chromosome[];
-      foreach (var chromosome in chromosomes)
-      {
-        AverageFitness += chromosome.Fitness / chromosomes.Length;
-      }
     }
 
     public void EvaluateFitnessOfPopulation()
     {
-      double totalFitness = 0;
       Debug.Assert(_generation != null && _alg != null, "Is your constructor ok?");
-      foreach (Chromosome chromosome in _generation)
-      {
-        for (int i = 0; i < _alg.NumberOfTrials; i++)
-        {
-          double fitness = _fitnessCalc(chromosome, this) / _alg.NumberOfTrials;
-          //reset the fitness if a fitness already exists
-          if (i == 0)
-          {
-            chromosome.Fitness = 0;
-          }
-          chromosome.Fitness += fitness;
-          totalFitness += fitness;
-        }
-        if (chromosome == _generation[0])
-        {
-          MaxFitness = chromosome.Fitness;
-        }
-        if (chromosome.Fitness > MaxFitness)
-        {
-          MaxFitness = chromosome.Fitness;
-        }
-      }
-      AverageFitness = totalFitness / NumberOfChromosomes;
+      Parallel.ForEach(_generation, chromosome => {
+        double[] fitness = new double[_alg.NumberOfTrials];
+        Parallel.For(0, _alg.NumberOfTrials, i => {
+          fitness[i] = _fitnessCalc(chromosome, this);
+        });
+        chromosome.Fitness = fitness.Average();
+      });
       Array.Sort(_generation);
 
       //Delta to deal with any rounding errors
