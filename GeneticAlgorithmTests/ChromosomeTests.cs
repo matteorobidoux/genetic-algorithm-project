@@ -11,8 +11,6 @@ namespace GeneticAlgorithmTests
     [TestMethod]
     public void TestCtor()
     {
-      Assert.ThrowsException<ArgumentOutOfRangeException>(new Action(delegate { new Chromosome(0, 1, 2); }));
-      Assert.ThrowsException<ArgumentOutOfRangeException>(new Action(delegate { new Chromosome(1, 0, 2); }));
       Chromosome c1 = new Chromosome(10, 5, 0);
       Assert.AreEqual(10, c1.Length);
       int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1 };
@@ -72,10 +70,6 @@ namespace GeneticAlgorithmTests
     public void TestIndexerSet()
     {
       Chromosome c1 = new Chromosome(10, 5, 0);
-      Assert.ThrowsException<IndexOutOfRangeException>(new Action(delegate { c1[-1] = 0; }));
-      Assert.ThrowsException<IndexOutOfRangeException>(new Action(delegate { c1[10] = 0; }));
-      Assert.ThrowsException<ArgumentOutOfRangeException>(new Action(delegate { c1[0] = 7; }));
-      Assert.ThrowsException<ArgumentOutOfRangeException>(new Action(delegate { c1[0] = -2; }));
       c1[0] = 0;
       Assert.AreEqual(0, c1[0]);
       c1[9] = 4;

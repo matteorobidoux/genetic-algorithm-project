@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace GeneticAlgorithm
 {
@@ -27,14 +28,8 @@ namespace GeneticAlgorithm
 
     internal Generation(IGeneticAlgorithm alg, FitnessEventHandler fitnessCalc, int? seed = null)
     {
-      if (alg == null)
-      {
-        throw new ArgumentNullException("The algorithm that the generation uses cannot be null");
-      }
-      if (fitnessCalc == null)
-      {
-        throw new ArgumentNullException($"The fitness calculation delegate cannot be null");
-      }
+      Debug.Assert(alg != null, "A generation needs an algorithm");
+      Debug.Assert(fitnessCalc != null, "A generation needs a way to calculate its fitness");
       _fitnessCalc = fitnessCalc;
       _seed = seed;
       _alg = alg;
@@ -47,19 +42,10 @@ namespace GeneticAlgorithm
 
     internal Generation(IChromosome[] chromosomes, Generation generation)
     {
-      //TODO: Add a check to see if the input chromosomes follow the specifications of the generation
-      if (chromosomes == null)
-      {
-        throw new ArgumentNullException($"The chromosomes of the generation cannot be null");
-      }
-      if (!(chromosomes is Chromosome[]))
-      {
-        throw new ArgumentException($"Chromosome array must be of type Chromosome[]");
-      }
-      if (generation == null)
-      {
-        throw new ArgumentNullException($"The generation cannot be null");
-      }
+
+      Debug.Assert(chromosomes != null, "This needs chromosomes to work");
+      Debug.Assert(chromosomes is Chromosome[], "This only works with the Chromosome class");
+      Debug.Assert(generation != null, "Needs a generation for details");
       _fitnessCalc = generation._fitnessCalc;
       _seed = generation._seed;
       _alg = generation._alg;
@@ -70,19 +56,10 @@ namespace GeneticAlgorithm
       }
     }
 
-    // <summary>
-    // Makes a Random object, either seeded or not
-    // </summary>
-    // <return>The Random object</return>
-    private Random GetRandomObj()
-    {
-      return _seed == null ? new Random() : new Random((int)_seed);
-    }
-
     public void EvaluateFitnessOfPopulation()
     {
       double totalFitness = 0;
-      
+      Debug.Assert(_generation != null && _alg != null, "Is your constructor ok?");
         foreach (Chromosome chromosome in _generation)
         {
           for (int i = 0; i < _alg.NumberOfTrials; i++)
@@ -95,6 +72,10 @@ namespace GeneticAlgorithm
             chromosome.Fitness += fitness;
             totalFitness += fitness;
           }
+          if (chromosome == _generation[0])
+          {
+            MaxFitness = chromosome.Fitness;
+          }
           if (chromosome.Fitness > MaxFitness)
           {
             MaxFitness = chromosome.Fitness;
@@ -102,13 +83,17 @@ namespace GeneticAlgorithm
         }
       AverageFitness = totalFitness/NumberOfChromosomes;
       Array.Sort(_generation);
+
+      //Delta to deal with any rounding errors
+      Debug.Assert(MaxFitness >= AverageFitness - 0.0000001, "Is this even mathematically possible?");
+      Debug.Assert(_generation[0].Fitness == MaxFitness, "Somehow the sorting broke");
     }
 
     public IChromosome SelectParent()
     {
       //Could have a problem/crash if the fitnesses are all negative, or the average is 0
       //If the average is positive and there are some negatives, then they will never be chosen
-      Random rand = GetRandomObj();
+      Random rand = _seed == null ? new Random() : new Random((int)_seed);
       //Weigthed selection algorithm only works with positive fitnesses
       if (AverageFitness > 0) 
       {
