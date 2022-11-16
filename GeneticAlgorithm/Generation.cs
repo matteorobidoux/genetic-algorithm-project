@@ -9,11 +9,11 @@ namespace GeneticAlgorithm
     private FitnessEventHandler _fitnessCalc;
     private int? _seed;
     private Chromosome[] _generation;
-    public IChromosome this[int index] 
+    public IChromosome this[int index]
     {
       get
       {
-        if(index < 0 || index >= NumberOfChromosomes)
+        if (index < 0 || index >= NumberOfChromosomes)
         {
           throw new IndexOutOfRangeException($"Invalid index for Generation. Expected between 0 and {NumberOfChromosomes}. Got: {index}");
         }
@@ -21,10 +21,10 @@ namespace GeneticAlgorithm
       }
     }
 
-    public double AverageFitness {get; private set;}
+    public double AverageFitness { get; private set; }
 
-    public double MaxFitness {get; private set;}
-    public long NumberOfChromosomes {get => _generation.Length;}
+    public double MaxFitness { get; private set; }
+    public long NumberOfChromosomes { get => _generation.Length; }
 
     internal Generation(IGeneticAlgorithm alg, FitnessEventHandler fitnessCalc, int? seed = null)
     {
@@ -52,7 +52,7 @@ namespace GeneticAlgorithm
       _generation = chromosomes as Chromosome[];
       foreach (var chromosome in chromosomes)
       {
-        AverageFitness += chromosome.Fitness/chromosomes.Length;
+        AverageFitness += chromosome.Fitness / chromosomes.Length;
       }
     }
 
@@ -60,28 +60,29 @@ namespace GeneticAlgorithm
     {
       double totalFitness = 0;
       Debug.Assert(_generation != null && _alg != null, "Is your constructor ok?");
-        foreach (Chromosome chromosome in _generation)
+      foreach (Chromosome chromosome in _generation)
+      {
+        for (int i = 0; i < _alg.NumberOfTrials; i++)
         {
-          for (int i = 0; i < _alg.NumberOfTrials; i++)
+          double fitness = _fitnessCalc(chromosome, this) / _alg.NumberOfTrials;
+          //reset the fitness if a fitness already exists
+          if (i == 0)
           {
-            double fitness = _fitnessCalc(chromosome, this) / _alg.NumberOfTrials;
-            //reset the fitness if a fitness already exists
-            if (i == 0) {
-              chromosome.Fitness = 0;
-            }
-            chromosome.Fitness += fitness;
-            totalFitness += fitness;
+            chromosome.Fitness = 0;
           }
-          if (chromosome == _generation[0])
-          {
-            MaxFitness = chromosome.Fitness;
-          }
-          if (chromosome.Fitness > MaxFitness)
-          {
-            MaxFitness = chromosome.Fitness;
-          }
+          chromosome.Fitness += fitness;
+          totalFitness += fitness;
         }
-      AverageFitness = totalFitness/NumberOfChromosomes;
+        if (chromosome == _generation[0])
+        {
+          MaxFitness = chromosome.Fitness;
+        }
+        if (chromosome.Fitness > MaxFitness)
+        {
+          MaxFitness = chromosome.Fitness;
+        }
+      }
+      AverageFitness = totalFitness / NumberOfChromosomes;
       Array.Sort(_generation);
 
       //Delta to deal with any rounding errors
@@ -95,7 +96,7 @@ namespace GeneticAlgorithm
       //If the average is positive and there are some negatives, then they will never be chosen
       Random rand = _seed == null ? new Random() : new Random((int)_seed);
       //Weigthed selection algorithm only works with positive fitnesses
-      if (AverageFitness > 0) 
+      if (AverageFitness > 0)
       {
         double pool = rand.NextDouble() * (AverageFitness * NumberOfChromosomes);
         int index;
@@ -105,7 +106,7 @@ namespace GeneticAlgorithm
           if (pool <= 0)
           {
             break;
-          } 
+          }
         }
         return _generation[index];
       }
