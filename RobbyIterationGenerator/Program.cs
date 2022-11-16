@@ -78,10 +78,6 @@ namespace RobbyIterationGenerator
                 return Int32.TryParse(input, out output) && output > 0;
             });
 
-            int gridSize = GetInputFromUser<Int32>("\nWhat should be the size of both dimensions of the grid? [Minimum >= 10]", (string input, out Int32 output) => {
-                return Int32.TryParse(input, out output) && output >= 10;
-            });
-
             int populationSize = GetInputFromUser<Int32>("\nHow many Robbys should there be per generation? [Minimum >= 10]", (string input, out Int32 output) => {
                 return Int32.TryParse(input, out output) && output >= 10;
             });
@@ -98,7 +94,7 @@ namespace RobbyIterationGenerator
                 return Double.TryParse(input, out output) && output >= 0 && output <= 1;
             });
 
-            return Robby.CreateRobby(numActions, numTestGrids, gridSize, numGenerations, mutationRate, eliteRate, populationSize);
+            return Robby.CreateRobby(numActions, numTestGrids, numGenerations, mutationRate, eliteRate, populationSize);
         }
     }
 }

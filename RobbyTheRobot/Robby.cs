@@ -6,7 +6,6 @@ namespace RobbyTheRobot
     {
         public static IRobbyTheRobot CreateRobby(int numberOfActions,
                                                  int numberOfTrials,
-                                                 int gridSize,
                                                  int numberOfGenerations,
                                                  double mutationRate,
                                                  double eliteRate,
@@ -21,11 +20,6 @@ namespace RobbyTheRobot
             if(numberOfTrials < 1)
             {
                 throw new ArgumentOutOfRangeException($"Number of test grids minimum is 1. Got {numberOfTrials}");
-            }
-
-            if(gridSize < 10)
-            {
-                throw new ArgumentOutOfRangeException($"Grid size minimum is 10. Got {gridSize}");
             }
 
             if(numberOfGenerations < 1)
@@ -50,7 +44,6 @@ namespace RobbyTheRobot
             
             return new RobbyTheRobot(numberOfActions,
                                      numberOfTrials,
-                                     gridSize,
                                      numberOfGenerations,
                                      mutationRate,
                                      eliteRate,

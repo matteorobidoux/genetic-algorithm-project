@@ -23,13 +23,12 @@ namespace RobbyTheRobot
     private Task _fileWriteTask;
     public int NumberOfActions { get => _numberOfActions; } //steps for robby
     public int NumberOfTestGrids { get => _numberOfTrials; } //decide myself
-    public int GridSize { get => _gridSize; } //constant 10
+    public int GridSize { get => 10; } //constant 10
     public int NumberOfGenerations { get => _numberOfGenerations; } //set in constructor, by user
     public double MutationRate { get => _mutationRate; } //set in constructor, by user 
     public double EliteRate { get => _eliteRate; } //set in constructor, by user
     internal RobbyTheRobot(int numberOfActions,
                            int numberOfTrials,
-                           int gridSize,
                            int numberOfGenerations,
                            double mutationRate,
                            double eliteRate,
@@ -39,8 +38,6 @@ namespace RobbyTheRobot
       Debug.Assert(numberOfActions >= 10, "How did this number of actions get past validation?");
 
       Debug.Assert(numberOfTrials >= 1, "How did this number of actions get past validation?");
-
-      Debug.Assert(gridSize >= 10, "How did this grid size get past validation?");
 
       Debug.Assert(numberOfGenerations >= 1, "How did this number of generations get past validation?");
 
@@ -52,7 +49,6 @@ namespace RobbyTheRobot
 
       _numberOfActions = numberOfActions;
       _numberOfTrials = numberOfTrials;
-      _gridSize = gridSize;
       _numberOfGenerations = numberOfGenerations;
       _mutationRate = mutationRate;
       _eliteRate = eliteRate;
