@@ -168,7 +168,6 @@ namespace RobbyTheRobotTests
 
       //write file in ./TestRobbyTheRobot/GenerationBinTests/
       robby.GeneratePossibleSolutions(testOutputDirectory);
-      Thread.Sleep(500);
 
       Assert.AreEqual(6, eventCallCounter);
     }

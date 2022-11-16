@@ -20,6 +20,7 @@ namespace RobbyTheRobot
     private double _eliteRate; //between 0 and 1
     private int _populationSize; //number of chromosomes initially (200)
     private int? _potentialSeed; //for making random predictable
+    private Task _fileWriteTask;
     public int NumberOfActions { get => _numberOfActions; } //steps for robby
     public int NumberOfTestGrids { get => _numberOfTrials; } //decide myself
     public int GridSize { get => _gridSize; } //constant 10
@@ -85,6 +86,10 @@ namespace RobbyTheRobot
           IChromosome bestChromosome = currentGen[0]; //IGeneration sorted to have candidate with max fitness as index 0.
           string candidate = generationNum + "," + currentGen.MaxFitness + "," + NumberOfActions + "," + string.Join(",", bestChromosome.Genes);
           WriteToFile(folderPath + $"/generation{generationNum}.txt", candidate, generationNum);
+          if (generationNum == NumberOfGenerations) 
+          {
+            _fileWriteTask.Wait();
+          }
         }
       }
     }
@@ -97,7 +102,7 @@ namespace RobbyTheRobot
     /// <param name="text">Input string to store in the File</param>
     private void WriteToFile(string path, string text, int generationNum)
     {
-      Task.Run(() =>
+      _fileWriteTask = Task.Run(() =>
       {
         File.WriteAllText(path, text, Encoding.UTF8);
         Debug.Assert(File.Exists(path), "Built-in writing failed somehow");
