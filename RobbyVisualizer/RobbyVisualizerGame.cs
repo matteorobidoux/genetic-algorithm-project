@@ -22,7 +22,6 @@ namespace RobbyVisualizer
         private Song _eatingCookie;
         private SpriteFont _infoFontSprite;
         private Texture2D _background;
-        private bool _run;
         private string[] _fileDetails;
         private int _numOfMoves;
         private IRobbyTheRobot _robby;
@@ -31,7 +30,7 @@ namespace RobbyVisualizer
         private int _baseY;
         private int _sizeChange;
         private bool _displayNewGrid;
-        private Random rand;
+        private Random _rand;
         private int _xStarting;
         private int _yStarting;
         private double _points;
@@ -41,16 +40,14 @@ namespace RobbyVisualizer
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            _run = false;
             _fileDetails = null;
             _numOfMoves = 0;
             _robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, null);
-            _contentGrid =  _robby.GenerateRandomTestGrid();
             _baseX = 470;
             _baseY = 30;
             _sizeChange = 78;
             _displayNewGrid = true;
-            rand = new Random();
+            _rand = new Random();
             _points = 0;
 
         }
@@ -109,6 +106,12 @@ namespace RobbyVisualizer
         protected override void Update(GameTime gameTime)
         {
             if(_displayNewGrid){
+                MediaPlayer.Stop();
+                RemoveCookies();
+                _numOfMoves = 0;
+                _points = 0;
+                _contentGrid = _robby.GenerateRandomTestGrid();
+                _cookies = new CookieSprite[10,10];
                 for(int i = 0; i< 10; i++){
                     for(int j = 0; j< 10; j++){
                         if(_contentGrid[i,j] == ContentsOfGrid.Can){
@@ -119,18 +122,18 @@ namespace RobbyVisualizer
                     }
                 }
 
-                _yStarting = rand.Next(0,10);
-                _xStarting = rand.Next(0,10);
+                _yStarting = _rand.Next(0,10);
+                _xStarting = _rand.Next(0,10);
+                if(_cookieMonster != null){
+                    Components.Remove(_cookieMonster);
+                }
                 _cookieMonster = new CookieMonsterSprite(this, _grid[_yStarting,_xStarting].XPosition - 10, _grid[_yStarting,_xStarting].YPosition - 10);
                 Components.Add(_cookieMonster);
                 _displayNewGrid = false;
             }
 
-            OnCookie();
-
             if(_buttonSprite.IsClicked){
                 _buttonSprite.IsClicked = false;
-                _run = true;
                 MoveCookieMonster();
             }
 
@@ -158,6 +161,7 @@ namespace RobbyVisualizer
             var task = new Task(() => {
                 foreach(string file in _buttonSprite.Files){
                     _fileDetails = System.IO.File.ReadAllText(file).Split(",");
+                    
                     int[] moves = new int[_fileDetails.Length-3];
                     for(int i = 3; i < _fileDetails.Length; i++){
                         moves[i-3] = Convert.ToInt32(_fileDetails[i]);
@@ -166,9 +170,15 @@ namespace RobbyVisualizer
                     int previousX = _xStarting;
                     int previousY = _yStarting;
 
+                    double previousPoints = _points;
                     for(int i = 3; i < Int32.Parse(_fileDetails[2])+3; i++){
-                        _points += RobbyHelper.ScoreForAllele(moves,_contentGrid, new Random(),ref _xStarting, ref _yStarting);
+                        _points += RobbyHelper.ScoreForAllele(moves,_contentGrid, new Random(), ref _yStarting, ref _xStarting);
                         
+                        _cookieMonster.Eating = false;
+                        if(previousPoints + 10 == _points){
+                            EatCookie(previousY,previousX);
+                        }
+
                         if(previousX > _xStarting){
                             _cookieMonster.XPosition -= _sizeChange;
                         } else if(previousX < _xStarting){
@@ -183,37 +193,34 @@ namespace RobbyVisualizer
 
                         previousX = _xStarting;
                         previousY = _yStarting;
+                        previousPoints = _points;
+                        
     
-                        Thread.Sleep(500);
+                        Thread.Sleep(50);
                         _numOfMoves++;
                     }
-                    _cookieMonster.XPosition = 460;
-                    _cookieMonster.YPosition = 20;
-                    MediaPlayer.Stop();
+                    _displayNewGrid = true;
                     Thread.Sleep(2000);
-                    _numOfMoves = 0;
                 } 
             });
             task.Start();
         }
 
-        public void OnCookie(){
-            for(int i =0; i< _cookies.GetLength(0); i++){
-                for(int j =0; j< _cookies.GetLength(1); j++){
-                    if( _cookies[i,j] != null){
-                        if(_cookieMonster.XPosition == _cookies[i,j].XPosition && _cookieMonster.YPosition == _cookies[i,j].YPosition && _cookieMonster.Eating == true){
-                            if(_cookies[i,j].IsVisible && _run){
-                                MediaPlayer.Play(_eatingCookie);
-                                _cookies[i,j].IsVisible = false;
-                            }
-                        }
-                    } else {
-                        if(_cookieMonster.XPosition + 10 == _grid[i,j].XPosition && _cookieMonster.YPosition + 10 == _grid[i,j].YPosition){
-                            _cookieMonster.Eating = false;
+        public void EatCookie(int y, int x){
+            _cookieMonster.Eating = true;
+            MediaPlayer.Play(_eatingCookie);
+            _cookies[y,x].IsVisible = false;
+        }
+
+        public void RemoveCookies(){
+             for(int i = 0; i< 10; i++){
+                    for(int j = 0; j< 10; j++){
+                        if(_cookies[i,j] != null){
+                            Components.Remove(_cookies[i,j]);
                         }
                     }
                 }
-            }
         }
+
     }
 }

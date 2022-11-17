@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Windows.Forms;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 public class ButtonSprite : DrawableGameComponent
 {
@@ -67,8 +68,9 @@ public class ButtonSprite : DrawableGameComponent
                 DialogResult result = folderDlg.ShowDialog();
                 _isClicked = true;
                 _files = Directory.GetFiles(folderDlg.SelectedPath);
-                Array.Sort(_files);
             }
+                Array.Sort(_files);
+            
         }
     }
 
