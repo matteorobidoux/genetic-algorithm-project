@@ -26,8 +26,10 @@ namespace RobbyVisualizer
 
         public CookieSprite(Game game, int xPosition, int yPosition) : base(game){
             _game = game;
-            _xPosition = xPosition;
-            _yPosition = yPosition;
+
+            // -10 being fudge factor for Cookie Sprite
+            _xPosition = xPosition - 10;
+            _yPosition = yPosition - 10;
             IsVisible = true;
         }
 
