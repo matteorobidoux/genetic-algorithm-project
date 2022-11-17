@@ -67,33 +67,12 @@ public class ButtonSprite : DrawableGameComponent
                 folderDlg.ShowNewFolderButton = true;   
                 DialogResult result = folderDlg.ShowDialog();
                 _files = Directory.GetFiles(folderDlg.SelectedPath);
-                string temp = "";
-                for(int i = 0; i < _files.Length-1; i++){
-                    string genString = Regex.Match(_files[i], @"\\generation\d+").Value;
-		            int genNum = Int32.Parse(Regex.Match(genString, @"\d+").Value);
-                    for(int j = i+1; j < _files.Length; j++){
-                        string genString2 = Regex.Match(_files[j], @"\\generation\d+").Value;
-		                int genNum2 = Int32.Parse(Regex.Match(genString2, @"\d+").Value);
-                        if(genNum2 < genNum){
-                            temp = _files[i];
-                            _files[i] = _files[j];
-                            _files[j] = temp;
-                        }
-                    }
-                }
-                for(int i = 0; i < _files.Length-1; i++){
-                    string genString = Regex.Match(_files[i], @"\\generation\d+").Value;
-		            int genNum = Int32.Parse(Regex.Match(genString, @"\d+").Value);
-                    for(int j = i+1; j < _files.Length; j++){
-                        string genString2 = Regex.Match(_files[j], @"\\generation\d+").Value;
-		                int genNum2 = Int32.Parse(Regex.Match(genString2, @"\d+").Value);
-                        if(genNum2 < genNum){
-                            temp = _files[i];
-                            _files[i] = _files[j];
-                            _files[j] = temp;
-                        }
-                    }
-                }
+                Array.Sort(_files, (a,b) => {
+                    Regex regex = new Regex(@"\\generation(\d+).txt$");
+                    var genA = Int32.Parse(regex.Match(a).Groups[1].Value);
+                    var genB = Int32.Parse(regex.Match(b).Groups[1].Value);
+                    return genA.CompareTo(genB);
+                });
                 _isClicked = true;
             }            
         }
