@@ -196,7 +196,7 @@ namespace RobbyVisualizer
                         previousPoints = _points;
                         
     
-                        Thread.Sleep(50);
+                        Thread.Sleep(100);
                         _numOfMoves++;
                     }
                     _displayNewGrid = true;

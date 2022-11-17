@@ -66,11 +66,36 @@ public class ButtonSprite : DrawableGameComponent
                 FolderBrowserDialog folderDlg = new FolderBrowserDialog();  
                 folderDlg.ShowNewFolderButton = true;   
                 DialogResult result = folderDlg.ShowDialog();
-                _isClicked = true;
                 _files = Directory.GetFiles(folderDlg.SelectedPath);
-            }
-                Array.Sort(_files);
-            
+                string temp = "";
+                for(int i = 0; i < _files.Length-1; i++){
+                    string genString = Regex.Match(_files[i], @"\\generation\d+").Value;
+		            int genNum = Int32.Parse(Regex.Match(genString, @"\d+").Value);
+                    for(int j = i+1; j < _files.Length; j++){
+                        string genString2 = Regex.Match(_files[j], @"\\generation\d+").Value;
+		                int genNum2 = Int32.Parse(Regex.Match(genString2, @"\d+").Value);
+                        if(genNum2 < genNum){
+                            temp = _files[i];
+                            _files[i] = _files[j];
+                            _files[j] = temp;
+                        }
+                    }
+                }
+                for(int i = 0; i < _files.Length-1; i++){
+                    string genString = Regex.Match(_files[i], @"\\generation\d+").Value;
+		            int genNum = Int32.Parse(Regex.Match(genString, @"\d+").Value);
+                    for(int j = i+1; j < _files.Length; j++){
+                        string genString2 = Regex.Match(_files[j], @"\\generation\d+").Value;
+		                int genNum2 = Int32.Parse(Regex.Match(genString2, @"\d+").Value);
+                        if(genNum2 < genNum){
+                            temp = _files[i];
+                            _files[i] = _files[j];
+                            _files[j] = temp;
+                        }
+                    }
+                }
+                _isClicked = true;
+            }            
         }
     }
 
