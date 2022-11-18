@@ -19,7 +19,7 @@ namespace GeneticAlgorithm
         {
           throw new IndexOutOfRangeException($"Invalid index for gene. Expected between 0 and {Length}. Got: {index}");
         }
-        return Genes[index];
+        return _genes[index];
       }
       internal set
       {
@@ -31,7 +31,7 @@ namespace GeneticAlgorithm
 
     public double Fitness {get; internal set;}
 
-    public int[] Genes => _genes.ToArray();
+    public int[] Genes => _genes;
 
     public long Length => _genes.Length;
 

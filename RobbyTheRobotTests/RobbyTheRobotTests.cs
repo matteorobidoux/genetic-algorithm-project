@@ -13,14 +13,13 @@ namespace RobbyTheRobotTests
     [TestMethod]
     public void TestCtor()
     {
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(9, 1, 20, 100, 0.5, 0.5, 200, null));
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 0, 20, 100, 0.5, 0.5, 200, null));
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 9, 100, 0.5, 0.5, 200, null));
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 20, 0, 0.5, 0.5, 200, null));
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 20, 100, 1.1, 0.5, 200, null));
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 20, 100, 0.5, -1, 200, null));
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 20, 100, 0.5, 0.5, -1, null));
-      var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, null);
+      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(9, 1, 100, 0.5, 0.5, 200, null));
+      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 0, 100, 0.5, 0.5, 200, null));
+      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 0, 0.5, 0.5, 200, null));
+      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 100, 1.1, 0.5, 200, null));
+      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 100, 0.5, -1, 200, null));
+      Assert.ThrowsException<ArgumentOutOfRangeException>(() => Robby.CreateRobby(200, 1, 100, 0.5, 0.5, -1, null));
+      var robby = Robby.CreateRobby(200, 1, 100, 0.5, 0.5, 200, null);
       Assert.AreEqual(200, robby.NumberOfActions);
       Assert.AreEqual(1, robby.NumberOfTestGrids);
       Assert.AreEqual(10, robby.GridSize);
@@ -34,7 +33,7 @@ namespace RobbyTheRobotTests
     {
       int? seed = 0;
 
-      var robby = Robby.CreateRobby(200, 1, 20, 100, 0.5, 0.5, 200, seed);
+      var robby = Robby.CreateRobby(200, 1, 100, 0.5, 0.5, 200, seed);
       var grid = robby.GenerateRandomTestGrid();
 
       int numOfCans = CountInGrid(grid, ContentsOfGrid.Can);
@@ -48,26 +47,16 @@ namespace RobbyTheRobotTests
 
       ContentsOfGrid[,] expectedGrid = new ContentsOfGrid[,]
       {
-        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can},
-        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can},
-        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can},
-        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty},
-        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can}
+        {ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty},
+        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can},
+        {ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can},
+        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty},
+        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty},
+        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Empty},
+        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can},
+        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can},
+        {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can},
+        {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can}
       };
     
       Assert.AreEqual(expectedCans, numOfCans);
@@ -87,7 +76,7 @@ namespace RobbyTheRobotTests
     {
       int? seed = null;
 
-      var robby = Robby.CreateRobby(200, 1, 20, 100, 0.5, 0.5, 200, seed);
+      var robby = Robby.CreateRobby(200, 1, 100, 0.5, 0.5, 200, seed);
       var grid = robby.GenerateRandomTestGrid();
 
       int numOfCans = CountInGrid(grid, ContentsOfGrid.Can);
@@ -109,7 +98,7 @@ namespace RobbyTheRobotTests
     {
       int? seed = null;
 
-      var robby = Robby.CreateRobby(200, 1, 21, 100, 0.5, 0.5, 200, seed);
+      var robby = Robby.CreateRobby(200, 1, 100, 0.5, 0.5, 200, seed);
       var grid = robby.GenerateRandomTestGrid();
 
       int numOfCans = CountInGrid(grid, ContentsOfGrid.Can);
@@ -131,7 +120,7 @@ namespace RobbyTheRobotTests
     {
       int? seed = 1;
 
-      var robby = Robby.CreateRobby(200, 1, 10, 10, 0.5, 0.5, 200, seed);
+      var robby = Robby.CreateRobby(200, 1, 10, 0.5, 0.5, 200, seed);
 
       //automatically create test directory
       string testOutputDirectory = "../../../TEMP/GenerationsBinSeededTests";
@@ -155,7 +144,7 @@ namespace RobbyTheRobotTests
     {
       int? seed = null;
 
-      var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, seed);
+      var robby = Robby.CreateRobby(200, 1, 100, 0.5, 0.5, 200, seed);
       int eventCallCounter = 0;
       robby.FileWrittenEvent += delegate
       {
@@ -168,7 +157,6 @@ namespace RobbyTheRobotTests
 
       //write file in ./TestRobbyTheRobot/GenerationBinTests/
       robby.GeneratePossibleSolutions(testOutputDirectory);
-      Thread.Sleep(500);
 
       Assert.AreEqual(6, eventCallCounter);
     }
@@ -177,7 +165,7 @@ namespace RobbyTheRobotTests
     [TestMethod]
     public void TestInvalidPathForGeneratingSolutions()
     {
-      var robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200);
+      var robby = Robby.CreateRobby(200, 1, 100, 0.5, 0.5, 200);
       Assert.ThrowsException<ApplicationException>(() => robby.GeneratePossibleSolutions("../../../Blah"));
     }
 

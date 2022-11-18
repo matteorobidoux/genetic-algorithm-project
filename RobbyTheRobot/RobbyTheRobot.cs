@@ -14,21 +14,20 @@ namespace RobbyTheRobot
     public int LengthOfGene { get => 7; } //variety of genes (different actions robby can do), from 0 to 6.
     private int _numberOfActions; // number of moves robby can do (200)
     private int _numberOfTrials; //The number of times the fitness function should be called when computing the result
-    private int _gridSize; //size of one dimension of the grid
     private int _numberOfGenerations; //number of generations
     private double _mutationRate; //between 0 and 1
     private double _eliteRate; //between 0 and 1
     private int _populationSize; //number of chromosomes initially (200)
     private int? _potentialSeed; //for making random predictable
+    private Task _fileWriteTask;
     public int NumberOfActions { get => _numberOfActions; } //steps for robby
     public int NumberOfTestGrids { get => _numberOfTrials; } //decide myself
-    public int GridSize { get => _gridSize; } //constant 10
+    public int GridSize { get => 10; } //constant 10
     public int NumberOfGenerations { get => _numberOfGenerations; } //set in constructor, by user
     public double MutationRate { get => _mutationRate; } //set in constructor, by user 
     public double EliteRate { get => _eliteRate; } //set in constructor, by user
     internal RobbyTheRobot(int numberOfActions,
                            int numberOfTrials,
-                           int gridSize,
                            int numberOfGenerations,
                            double mutationRate,
                            double eliteRate,
@@ -38,8 +37,6 @@ namespace RobbyTheRobot
       Debug.Assert(numberOfActions >= 10, "How did this number of actions get past validation?");
 
       Debug.Assert(numberOfTrials >= 1, "How did this number of actions get past validation?");
-
-      Debug.Assert(gridSize >= 10, "How did this grid size get past validation?");
 
       Debug.Assert(numberOfGenerations >= 1, "How did this number of generations get past validation?");
 
@@ -51,7 +48,6 @@ namespace RobbyTheRobot
 
       _numberOfActions = numberOfActions;
       _numberOfTrials = numberOfTrials;
-      _gridSize = gridSize;
       _numberOfGenerations = numberOfGenerations;
       _mutationRate = mutationRate;
       _eliteRate = eliteRate;
@@ -85,6 +81,10 @@ namespace RobbyTheRobot
           IChromosome bestChromosome = currentGen[0]; //IGeneration sorted to have candidate with max fitness as index 0.
           string candidate = generationNum + "," + currentGen.MaxFitness + "," + NumberOfActions + "," + string.Join(",", bestChromosome.Genes);
           WriteToFile(folderPath + $"/generation{generationNum}.txt", candidate, generationNum);
+          if (generationNum == NumberOfGenerations) 
+          {
+            _fileWriteTask.Wait();
+          }
         }
       }
     }
@@ -97,13 +97,13 @@ namespace RobbyTheRobot
     /// <param name="text">Input string to store in the File</param>
     private void WriteToFile(string path, string text, int generationNum)
     {
-      Task.Run(() =>
+      _fileWriteTask = Task.Run(() =>
       {
         File.WriteAllText(path, text, Encoding.UTF8);
         Debug.Assert(File.Exists(path), "Built-in writing failed somehow");
         if (FileWrittenEvent != null)
         {
-          string metadata = $"Generation #{generationNum} successfully written to disk.";
+          string metadata = $"Generation #{generationNum} successfully written to disk. Fitness: {text.Split(",")[1]}";
           FileWrittenEvent(metadata);
         }
       });
