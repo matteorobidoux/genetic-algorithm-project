@@ -37,7 +37,7 @@ namespace GeneticAlgorithmTests
       Chromosome c1 = new Chromosome(10, 5, 0);
       Chromosome c2 = new Chromosome(c1.Genes, 5, 0);
       Assert.AreEqual(10, c2.Length);
-      int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
+      int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1 };
       for (int i = 0; i < c2.Length; i++)
       {
         Assert.AreEqual(expectedGenes[i], c2[i]);

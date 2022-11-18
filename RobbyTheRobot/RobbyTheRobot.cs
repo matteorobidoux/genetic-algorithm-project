@@ -81,7 +81,7 @@ namespace RobbyTheRobot
           IChromosome bestChromosome = currentGen[0]; //IGeneration sorted to have candidate with max fitness as index 0.
           string candidate = generationNum + "," + currentGen.MaxFitness + "," + NumberOfActions + "," + string.Join(",", bestChromosome.Genes);
           WriteToFile(folderPath + $"/generation{generationNum}.txt", candidate, generationNum);
-          if (generationNum == NumberOfGenerations) 
+          if (generationNum == NumberOfGenerations)
           {
             _fileWriteTask.Wait();
           }

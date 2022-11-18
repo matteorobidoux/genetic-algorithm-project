@@ -13,9 +13,9 @@ namespace GeneticAlgorithm
 
     public int this[int index]
     {
-      get 
+      get
       {
-        if (index < 0 || index >= Length) 
+        if (index < 0 || index >= Length)
         {
           throw new IndexOutOfRangeException($"Invalid index for gene. Expected between 0 and {Length}. Got: {index}");
         }
@@ -29,13 +29,13 @@ namespace GeneticAlgorithm
       }
     }
 
-    public double Fitness {get; internal set;}
+    public double Fitness { get; internal set; }
 
     public int[] Genes => _genes;
 
     public long Length => _genes.Length;
 
-    internal Chromosome(int numGenes, int lengthOfGenes, int? seed = null) 
+    internal Chromosome(int numGenes, int lengthOfGenes, int? seed = null)
     {
       Debug.Assert(numGenes > 0, "You messed up when constructing the number of genes");
       Debug.Assert(lengthOfGenes > 0, "You need a longer length of gene");
@@ -69,27 +69,27 @@ namespace GeneticAlgorithm
 
     public int CompareTo([AllowNull] IChromosome other)
     {
-      if(other == null) return 1;
-      if(Fitness == other.Fitness) return 0;
-      return Fitness > other.Fitness? -1 : 1;
+      if (other == null) return 1;
+      if (Fitness == other.Fitness) return 0;
+      return Fitness > other.Fitness ? -1 : 1;
     }
 
     public IChromosome[] Reproduce(IChromosome spouse, double mutationProb)
     {
-      if(!(spouse is Chromosome) || spouse.Length != Length || (spouse as Chromosome)._lengthOfGenes != _lengthOfGenes)
+      if (!(spouse is Chromosome) || spouse.Length != Length || (spouse as Chromosome)._lengthOfGenes != _lengthOfGenes)
       {
         throw new ArgumentException("The spouse is incompatible with this chromosome");
       }
-      if(mutationProb < 0 || mutationProb > 1)
+      if (mutationProb < 0 || mutationProb > 1)
       {
         throw new ArgumentOutOfRangeException($"Invalid mutationProb. Expected value between 0 and 1. Got: {mutationProb}");
       }
       Debug.Assert(_genes != null, "How did this even happen?");
       Debug.Assert(_lengthOfGenes >= 0, "How did this even happen?");
       Chromosome parent = spouse as Chromosome;
-      Chromosome[] children = new Chromosome[]{new Chromosome(_genes, _lengthOfGenes, _seed), 
+      Chromosome[] children = new Chromosome[]{new Chromosome(_genes, _lengthOfGenes, _seed),
       new Chromosome(parent._genes, parent._lengthOfGenes, parent._seed)};
-      
+
       Random rand = GetRandomObj();
       int start = rand.Next((int)Length);
       int end = rand.Next(start, (int)Length);
@@ -131,7 +131,8 @@ namespace GeneticAlgorithm
     {
       Debug.Assert(start <= end, "You may have accidentally swapped the two points");
       Debug.Assert(childA != null & childB != null, "Neither of the children can be null");
-      for (int i = start; i <= end; i++) {
+      for (int i = start; i <= end; i++)
+      {
         int temp = childA[i];
         childA[i] = childB[i];
         childB[i] = temp;
