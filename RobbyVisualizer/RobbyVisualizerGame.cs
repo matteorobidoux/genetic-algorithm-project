@@ -37,6 +37,7 @@ namespace RobbyVisualizer
     private int _gridSize;
     private bool _validFile;
     private bool _isRunning;
+    private bool _hasAudio;
 
     public RobbyVisualizerGame()
     {
@@ -103,8 +104,12 @@ namespace RobbyVisualizer
     protected override void LoadContent()
     {
       _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-      _eatingCookie = Content.Load<Song>("Sounds/EatingCookie");
+      try {
+        _eatingCookie = Content.Load<Song>("Sounds/EatingCookie");
+        _hasAudio = true;
+      } catch (Exception) {
+        _hasAudio = false;
+      }
       _infoFontSprite = Content.Load<SpriteFont>("Fonts/Info");
       _background = Content.Load<Texture2D>("CookieMonsterBackground");
 
@@ -278,7 +283,10 @@ namespace RobbyVisualizer
     private void EatCookie(int y, int x)
     {
       _cookieMonster.Eating = true;
-      MediaPlayer.Play(_eatingCookie);
+      if (_hasAudio)
+      {
+        MediaPlayer.Play(_eatingCookie);
+      }
       _cookies[y, x].IsVisible = false;
     }
 
