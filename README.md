@@ -31,14 +31,14 @@ Next, you need to evolve Robby (Cookie Monster) and generate the necessary files
 In the root directory of the project:
     
     $ dotnet build ./RobbyIterationGenerator
-    $ dotnet run ./RobbyIterationGenerator
+    $ dotnet run --project ./RobbyIterationGenerator
 
 After running this project, you will be prompted by the console to enter all the necessary parameters to evolve Robby for a number of generations that you will specify. The end result is a series of .txt files of every generation, Robby's so called evolution.
 
 Next, you need to run the visualizer:
 
     $ dotnet build ./RobbyVisualizer
-    $ dotnet run ./RobbyVisualizer
+    $ dotnet run --project ./RobbyVisualizer
 
 You should see Cookie Monster within a 10 x 10 grid. To make him start eating cookies, specify the directory where the .txt of the generations were saved by clicking the "Select Folder with Proper Data".
 
