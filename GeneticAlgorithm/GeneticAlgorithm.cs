@@ -87,6 +87,8 @@ namespace GeneticAlgorithm
       IChromosome[] elites = new Chromosome[_eliteNum];
       IChromosome[] nextGeneration = new Chromosome[PopulationSize];
       Debug.Assert(_currentGeneration != null, "This probably shouldn't be running");
+      
+      // Fill the first portion of the next generation with the elites from the previous
       for (int i = 0; i < elites.Length; i++)
       {
         elites[i] = _currentGeneration[i];
@@ -96,6 +98,7 @@ namespace GeneticAlgorithm
       //Fill the remaining population with children
       Parallel.For(elites.Length, PopulationSize - 1, i =>
       {
+        // Only want to do things every 2 iterations (I couldn't find a way to increment by 2)
         if (i % 2 == PopulationSize % 2)
         {
           IChromosome parent1 = eliteGen.SelectParent();

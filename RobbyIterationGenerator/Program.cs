@@ -22,19 +22,15 @@ namespace RobbyIterationGenerator
       string path = GetInputFromUser<string>("Please enter the folder where you would like to store the output files.", (string input, out string output) =>
       {
         output = input;
-        if (new Regex("^[0-9a-zA-Z_:\\-\\\\\\.\\/\\s]+$").Match(input).Success)
+        try
         {
-          try
-          {
-            Directory.CreateDirectory(input);
-            return true;
-          }
-          catch (Exception)
-          {
-            return false;
-          }
+          Directory.CreateDirectory(input);
+          return true;
         }
-        return false;
+        catch (Exception)
+        {
+          return false;
+        }
       });
 
       robby.FileWrittenEvent += new FileHandler((metadata) =>
@@ -42,6 +38,7 @@ namespace RobbyIterationGenerator
         Console.WriteLine("\n" + metadata);
       });
 
+      // Allow cancellation of the program while still printing stopwatch
       Console.CancelKeyPress += (obj, args) =>
       {
         timer.Stop();
@@ -51,8 +48,6 @@ namespace RobbyIterationGenerator
       Console.WriteLine("\n[Press ctrl + c to stop at any time]");
 
       robby.GeneratePossibleSolutions(path);
-
-
 
       timer.Stop();
       Console.WriteLine($"\nGeneration has stopped. Time Elapsed: {timer.Elapsed}");
@@ -77,10 +72,6 @@ namespace RobbyIterationGenerator
 
     private static IRobbyTheRobot MakeRobby()
     {
-      //TODO 
-      //Make sure the validation is good
-      //Input the retrieved values into the Robby creator
-      //Hard code the other values inside Robby creator (length/number of genes, grid size, etc.)
       int numActions = GetInputFromUser<Int32>("\nHow many actions is Robby allowed to take? [Minimum >= 10]", (string input, out Int32 output) =>
       {
         return Int32.TryParse(input, out output) && output >= 10;

@@ -87,6 +87,8 @@ namespace GeneticAlgorithm
       Debug.Assert(_genes != null, "How did this even happen?");
       Debug.Assert(_lengthOfGenes >= 0, "How did this even happen?");
       Chromosome parent = spouse as Chromosome;
+
+      //Making the children based on the parent
       Chromosome[] children = new Chromosome[]{new Chromosome(_genes, _lengthOfGenes, _seed),
       new Chromosome(parent._genes, parent._lengthOfGenes, parent._seed)};
 
