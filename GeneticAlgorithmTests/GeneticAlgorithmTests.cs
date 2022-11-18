@@ -44,7 +44,7 @@ namespace GeneticAlgorithmTests
       alg.GenerateGeneration();
       Assert.AreEqual(1, alg.GenerationCount);
       Generation g1 = alg.CurrentGeneration as Generation;
-      int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
+      int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1 };
       Assert.AreEqual(10, g1.NumberOfChromosomes);
       Assert.AreEqual(3, g1.MaxFitness, 0.0000001);
       for (int i = 0; i < g1.NumberOfChromosomes; i++)
@@ -86,7 +86,7 @@ namespace GeneticAlgorithmTests
       alg.GenerateGeneration();
       Assert.AreEqual(2, alg.GenerationCount);
       Generation g1 = alg.CurrentGeneration as Generation;
-      int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
+      int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1 };
       int[] expectedKid1 = new int[] { 3, 4, 2, 4, 3, 4, 4, 2, 3, 1 };
       int[] expectedKid2 = new int[] { 3, 4, 3, 1, 4, 2, 4, 2, 4, 1 };
       Assert.AreEqual(10, g1.NumberOfChromosomes);
@@ -148,7 +148,7 @@ namespace GeneticAlgorithmTests
       alg.GenerateGeneration();
       Assert.AreEqual(2, alg.GenerationCount);
       Generation g1 = alg.CurrentGeneration as Generation;
-      int[] expectedGenes = new int[] {3, 4, 3, 2, 1, 2, 4, 2, 4, 1};
+      int[] expectedGenes = new int[] { 3, 4, 3, 2, 1, 2, 4, 2, 4, 1 };
       int[] expectedKid1 = new int[] { 3, 4, 2, 4, 3, 4, 4, 2, 3, 1 };
       int[] expectedKid2 = new int[] { 3, 4, 3, 1, 4, 2, 4, 2, 4, 1 };
       Assert.AreEqual(11, g1.NumberOfChromosomes);
@@ -226,7 +226,7 @@ namespace GeneticAlgorithmTests
     {
       return chromosome[0];
     }
-    
+
     private double MockCalcFitnessBad(IChromosome chromosome, IGeneration generation)
     {
       return 1;

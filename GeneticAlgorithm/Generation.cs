@@ -24,24 +24,26 @@ namespace GeneticAlgorithm
     }
 
     private double? _averageFitness;
-    public double AverageFitness { 
-      get 
+    public double AverageFitness
+    {
+      get
       {
         if (_averageFitness == null)
         {
-          _averageFitness = _generation.Average<Chromosome>((chromosome) => {return chromosome.Fitness;});
+          _averageFitness = _generation.Average<Chromosome>((chromosome) => { return chromosome.Fitness; });
         }
         return (double)_averageFitness;
       }
     }
 
     private double? _maxFitness;
-    public double MaxFitness { 
+    public double MaxFitness
+    {
       get
       {
         if (_maxFitness == null)
         {
-          _maxFitness = _generation.Max<Chromosome>((chromosome) => {return chromosome.Fitness;});
+          _maxFitness = _generation.Max<Chromosome>((chromosome) => { return chromosome.Fitness; });
         }
         return (double)_maxFitness;
       }
@@ -56,7 +58,8 @@ namespace GeneticAlgorithm
       _seed = seed;
       _alg = alg;
       _generation = new Chromosome[_alg.PopulationSize];
-      Parallel.For(0, NumberOfChromosomes, i => {
+      Parallel.For(0, NumberOfChromosomes, i =>
+      {
         _generation[i] = new Chromosome(_alg.NumberOfGenes, _alg.LengthOfGene, _seed);
       });
     }
@@ -76,9 +79,11 @@ namespace GeneticAlgorithm
     public void EvaluateFitnessOfPopulation()
     {
       Debug.Assert(_generation != null && _alg != null, "Is your constructor ok?");
-      Parallel.ForEach(_generation, chromosome => {
+      Parallel.ForEach(_generation, chromosome =>
+      {
         double[] fitness = new double[_alg.NumberOfTrials];
-        Parallel.For(0, _alg.NumberOfTrials, i => {
+        Parallel.For(0, _alg.NumberOfTrials, i =>
+        {
           fitness[i] = _fitnessCalc(chromosome, this);
         });
         chromosome.Fitness = fitness.Average();

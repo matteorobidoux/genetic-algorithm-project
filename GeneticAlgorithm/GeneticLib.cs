@@ -18,7 +18,7 @@ namespace GeneticAlgorithm
       {
         throw new ArgumentOutOfRangeException($"The length of a gene must be a positive integer. Got: {lengthOfGene}");
       }
-      else if (eliteRate < 0 || eliteRate > 1)
+      else if (eliteRate <= 0 || eliteRate >= 1)
       {
         throw new ArgumentOutOfRangeException($"Elite rate expected between 0 and 1. Got: {eliteRate}");
       }

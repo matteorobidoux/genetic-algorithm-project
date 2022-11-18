@@ -11,31 +11,31 @@ namespace GeneticAlgorithm
     private FitnessEventHandler _fitnessCalc;
     private Generation _currentGeneration;
     private int _eliteNum;
-    public int PopulationSize {get;}
+    public int PopulationSize { get; }
 
-    public int NumberOfGenes {get;}
+    public int NumberOfGenes { get; }
 
-    public int LengthOfGene {get;}
+    public int LengthOfGene { get; }
 
-    public double MutationRate {get;}
+    public double MutationRate { get; }
 
-    public double EliteRate {get;}
+    public double EliteRate { get; }
 
-    public int NumberOfTrials {get;}
+    public int NumberOfTrials { get; }
 
-    public long GenerationCount {get => _generationCount;}
+    public long GenerationCount { get => _generationCount; }
 
-    public IGeneration CurrentGeneration {get => _currentGeneration;}
+    public IGeneration CurrentGeneration { get => _currentGeneration; }
 
-    public FitnessEventHandler FitnessCalculation {get => _fitnessCalc;}
+    public FitnessEventHandler FitnessCalculation { get => _fitnessCalc; }
 
     internal GeneticAlgorithm(int populationSize, int numberOfGenes, int lengthOfGenes, double mutationRate,
-     double eliteRate, int numberOfTrials, FitnessEventHandler calcFunction, int? seed = null) 
+     double eliteRate, int numberOfTrials, FitnessEventHandler calcFunction, int? seed = null)
     {
       Debug.Assert(populationSize >= 10, "Don't know how this got past validation");
-      Debug.Assert(numberOfGenes > 0, "Don't know how this got past validation"); 
+      Debug.Assert(numberOfGenes > 0, "Don't know how this got past validation");
       Debug.Assert(lengthOfGenes > 0, "Don't know how this got past validation");
-      Debug.Assert(eliteRate >= 0 && eliteRate <= 1, "Don't know how this got past validation");
+      Debug.Assert(eliteRate > 0 && eliteRate < 1, "Don't know how this got past validation");
       Debug.Assert(populationSize % 2 == 0 && eliteRate * populationSize >= 2 || populationSize % 2 == 1 && eliteRate * populationSize >= 3, "Don't know how this got past validation");
       Debug.Assert(mutationRate >= 0 && mutationRate <= 1, "Don't know how this got past validation");
       Debug.Assert(numberOfTrials > 0, "Don't know how this got past validation");
@@ -58,7 +58,7 @@ namespace GeneticAlgorithm
       }
 
       Debug.Assert(_eliteNum % 2 == populationSize % 2, "Something went wrong with the above code");
-      
+
     }
 
     public IGeneration GenerateGeneration()
@@ -87,6 +87,8 @@ namespace GeneticAlgorithm
       IChromosome[] elites = new Chromosome[_eliteNum];
       IChromosome[] nextGeneration = new Chromosome[PopulationSize];
       Debug.Assert(_currentGeneration != null, "This probably shouldn't be running");
+      
+      // Fill the first portion of the next generation with the elites from the previous
       for (int i = 0; i < elites.Length; i++)
       {
         elites[i] = _currentGeneration[i];
@@ -94,19 +96,21 @@ namespace GeneticAlgorithm
       }
       Generation eliteGen = new Generation(elites, _currentGeneration);
       //Fill the remaining population with children
-      Parallel.For(elites.Length, PopulationSize - 1, i => {
+      Parallel.For(elites.Length, PopulationSize - 1, i =>
+      {
+        // Only want to do things every 2 iterations (I couldn't find a way to increment by 2)
         if (i % 2 == PopulationSize % 2)
         {
           IChromosome parent1 = eliteGen.SelectParent();
           IChromosome parent2;
           int tries = 0;
           //Try and prevent inbreeding
-          do 
+          do
           {
             parent2 = eliteGen.SelectParent();
             tries++;
           }
-          while(_seed == null && parent1 == parent2 && tries < 42);
+          while (_seed == null && parent1 == parent2 && tries < 42);
           IChromosome[] children = parent1.Reproduce(parent2, MutationRate);
           nextGeneration[i] = children[0];
           nextGeneration[i + 1] = children[1];

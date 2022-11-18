@@ -58,14 +58,14 @@ namespace RobbyTheRobotTests
         {ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can},
         {ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Empty,ContentsOfGrid.Can,ContentsOfGrid.Can,ContentsOfGrid.Can}
       };
-    
+
       Assert.AreEqual(expectedCans, numOfCans);
       Assert.AreEqual(expectedEmpty, numOfEmpties);
       for (int i = 0; i < grid.GetLength(0); i++)
       {
         for (int j = 0; j < grid.GetLength(1); j++)
         {
-          Assert.AreEqual(expectedGrid[i,j], grid[i,j]);
+          Assert.AreEqual(expectedGrid[i, j], grid[i, j]);
         }
       }
     }
