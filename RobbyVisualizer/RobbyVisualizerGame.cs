@@ -36,6 +36,7 @@ namespace RobbyVisualizer
     private double _points;
     private int _gridSize;
     private bool _validFile;
+    private bool _isRunning;
 
     public RobbyVisualizerGame()
     {
@@ -153,11 +154,13 @@ namespace RobbyVisualizer
       }
 
       // If files are chosen, start moving
-      if (_buttonSprite.IsClicked)
+      if (_buttonSprite.IsClicked && !_isRunning)
       {
         _buttonSprite.IsClicked = false;
         MoveCookieMonster();
       }
+        
+
 
       // TODO: Add your update logic here
 
@@ -184,7 +187,8 @@ namespace RobbyVisualizer
     {
       var task = new Task(() =>
       {
-
+        _isRunning = true;
+        _buttonSprite.IsEnabled = false;
         // Loop through all files within file list
         foreach (string file in _buttonSprite.Files)
         {
@@ -264,6 +268,8 @@ namespace RobbyVisualizer
 
           Thread.Sleep(2000);
         }
+        _isRunning = false;
+        _buttonSprite.IsEnabled = true;
       });
       task.Start();
     }

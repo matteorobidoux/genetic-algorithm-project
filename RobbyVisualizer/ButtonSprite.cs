@@ -35,12 +35,15 @@ public class ButtonSprite : DrawableGameComponent
     }
   }
 
+  public bool IsEnabled { get; set; }
+
   public ButtonSprite(Game game, int xPosition, int yPosition) : base(game)
   {
     _game = game;
     _xPosition = xPosition;
     _yPosition = yPosition;
     _isClicked = false;
+    IsEnabled = true;
   }
 
   public override void Initialize()
@@ -68,7 +71,7 @@ public class ButtonSprite : DrawableGameComponent
     // If the mouse is within the button and it is clicked
     if (rectangle.Contains(mousePoint))
     {
-      if (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
+      if (mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && IsEnabled)
       {
         FolderBrowserDialog folderDlg = new FolderBrowserDialog();
         folderDlg.ShowNewFolderButton = true;
