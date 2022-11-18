@@ -9,8 +9,6 @@ namespace RobbyVisualizer
 {
     public class CookieMonsterSprite : DrawableGameComponent
     {
-        private KeyboardState _previous;
-        private KeyboardState _current;
         private Game _game;
         private SpriteBatch _spriteBatch;
         private Texture2D _cookieMonsterSprite;
@@ -46,11 +44,11 @@ namespace RobbyVisualizer
         }
 
         public CookieMonsterSprite(Game game, int xPosition, int yPosition) : base(game){
-            _previous = Keyboard.GetState();
-            _current = Keyboard.GetState();
             _game = game;
-            _xPosition = xPosition;
-            _yPosition = yPosition;
+
+            // -10 being the fudge factor for Cookie Monster
+            _xPosition = xPosition - 10;
+            _yPosition = yPosition - 10;
             _eating = false;
         }
 
@@ -73,9 +71,6 @@ namespace RobbyVisualizer
 
         public override void Update(GameTime gameTime)
         {
-            _previous = _current;
-            _current = Keyboard.GetState();
-
             //Calls base Update
             base.Update(gameTime);
         }

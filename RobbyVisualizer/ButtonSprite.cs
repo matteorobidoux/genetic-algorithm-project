@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Windows.Forms;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 public class ButtonSprite : DrawableGameComponent
 {
@@ -65,10 +66,23 @@ public class ButtonSprite : DrawableGameComponent
                 FolderBrowserDialog folderDlg = new FolderBrowserDialog();  
                 folderDlg.ShowNewFolderButton = true;   
                 DialogResult result = folderDlg.ShowDialog();
-                _isClicked = true;
-                _files = Directory.GetFiles(folderDlg.SelectedPath);
-                Array.Sort(_files);
-            }
+
+                // If user clicks button but does not choose folder assure program does not crash and just wait until they choose a folder
+                try{
+                    _files = Directory.GetFiles(folderDlg.SelectedPath);
+
+                    // Sorts the files by ascending order based of the generation number
+                    Array.Sort(_files, (a,b) => {
+                        Regex regex = new Regex(@"\\generation(\d+).txt$");
+                        var genA = Int32.Parse(regex.Match(a).Groups[1].Value);
+                        var genB = Int32.Parse(regex.Match(b).Groups[1].Value);
+                        return genA.CompareTo(genB);
+                    });
+                    _isClicked = true;
+                } catch(Exception){
+                    _isClicked = false;
+                }
+            }            
         }
     }
 
