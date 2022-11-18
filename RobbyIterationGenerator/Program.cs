@@ -27,7 +27,7 @@ namespace RobbyIterationGenerator
                         Directory.CreateDirectory(input);
                         return true;
                     } 
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         return false;
                     }
