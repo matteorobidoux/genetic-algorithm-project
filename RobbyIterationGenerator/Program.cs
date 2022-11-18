@@ -39,9 +39,16 @@ namespace RobbyIterationGenerator
                 Console.WriteLine("\n" + metadata);
             });
 
+            Console.CancelKeyPress += (obj, args) => {
+                timer.Stop();
+                Console.WriteLine($"\nGeneration has stopped. Time Elapsed: {timer.Elapsed}");
+            };
+
             Console.WriteLine("\n[Press ctrl + c to stop at any time]");
             
             robby.GeneratePossibleSolutions(path);
+
+
 
             timer.Stop();
             Console.WriteLine($"\nGeneration has stopped. Time Elapsed: {timer.Elapsed}");
@@ -86,12 +93,12 @@ namespace RobbyIterationGenerator
                 return Int32.TryParse(input, out output) && output > 0;
             });
 
-            double mutationRate = GetInputFromUser<Double>("\nWhat mutation rate would you like? [Minimum > 0 , maximum < 1]", (string input, out Double output) => {
+            double mutationRate = GetInputFromUser<Double>("\nWhat mutation rate would you like? [Minimum >= 0 , maximum <= 1]", (string input, out Double output) => {
                 return Double.TryParse(input, out output) && output >= 0 && output <= 1;
             });
 
             double eliteRate = GetInputFromUser<Double>("\nWhat elite rate would you like? [Minimum > 0 , maximum < 1]", (string input, out Double output) => {
-                return Double.TryParse(input, out output) && output >= 0 && output <= 1;
+                return Double.TryParse(input, out output) && output > 0 && output < 1;
             });
 
             return Robby.CreateRobby(numActions, numTestGrids, numGenerations, mutationRate, eliteRate, populationSize);

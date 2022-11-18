@@ -32,7 +32,7 @@ namespace RobbyTheRobot
                 throw new ArgumentOutOfRangeException($"Mutation rate expected between 0 and 1. Got {mutationRate}");
             }
 
-            if(eliteRate < 0 || eliteRate > 1)
+            if(eliteRate <= 0 || eliteRate > 1)
             {
                 throw new ArgumentOutOfRangeException($"Elite rate expected between 0 and 1. Got {eliteRate}");
             }

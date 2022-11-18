@@ -35,7 +35,7 @@ namespace GeneticAlgorithm
       Debug.Assert(populationSize >= 10, "Don't know how this got past validation");
       Debug.Assert(numberOfGenes > 0, "Don't know how this got past validation"); 
       Debug.Assert(lengthOfGenes > 0, "Don't know how this got past validation");
-      Debug.Assert(eliteRate >= 0 && eliteRate <= 1, "Don't know how this got past validation");
+      Debug.Assert(eliteRate > 0 && eliteRate < 1, "Don't know how this got past validation");
       Debug.Assert(populationSize % 2 == 0 && eliteRate * populationSize >= 2 || populationSize % 2 == 1 && eliteRate * populationSize >= 3, "Don't know how this got past validation");
       Debug.Assert(mutationRate >= 0 && mutationRate <= 1, "Don't know how this got past validation");
       Debug.Assert(numberOfTrials > 0, "Don't know how this got past validation");
