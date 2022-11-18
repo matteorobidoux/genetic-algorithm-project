@@ -14,7 +14,6 @@ namespace RobbyTheRobot
     public int LengthOfGene { get => 7; } //variety of genes (different actions robby can do), from 0 to 6.
     private int _numberOfActions; // number of moves robby can do (200)
     private int _numberOfTrials; //The number of times the fitness function should be called when computing the result
-    private int _gridSize; //size of one dimension of the grid
     private int _numberOfGenerations; //number of generations
     private double _mutationRate; //between 0 and 1
     private double _eliteRate; //between 0 and 1
