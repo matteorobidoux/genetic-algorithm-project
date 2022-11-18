@@ -43,7 +43,7 @@ namespace RobbyVisualizer
             IsMouseVisible = true;
             _fileDetails = null;
             _numOfMoves = 0;
-            _robby = Robby.CreateRobby(200, 1, 10, 100, 0.5, 0.5, 200, null);
+            _robby = Robby.CreateRobby(200, 1, 100, 0.5, 0.5, 200, null);
             _baseX = 470;
             _baseY = 30;
             _sizeChange = 78;
