@@ -102,6 +102,8 @@ namespace GeneticAlgorithm
     /// <return> The newly generated generation </return>
     private Generation GenerateNextGeneration()
     {
+      // Random number of tries before inbreeding is allowed
+      int tryMax = 42; 
       Random rand = _seed == null ? new Random() : new Random((int)_seed);
       IChromosome[] elites = new Chromosome[_eliteNum];
       IChromosome[] nextGeneration = new Chromosome[PopulationSize];
@@ -123,7 +125,7 @@ namespace GeneticAlgorithm
           parent2 = eliteGen.SelectParent();
           tries++;
         }
-        while(_seed == null && parent1 == parent2 && tries < 42);
+        while(_seed == null && parent1 == parent2 && tries < tryMax);
         IChromosome[] children = parent1.Reproduce(parent2, MutationRate);
         nextGeneration[i] = children[0];
         nextGeneration[i + 1] = children[1];
