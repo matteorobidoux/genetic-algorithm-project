@@ -208,7 +208,6 @@ namespace RobbyVisualizer
                     {
                         MessageBox.Show("Invalid Folder Content... Skipping File!");
                         _validFile = false;
-                        Thread.Sleep(2000);
                         continue;
                     }
 
@@ -256,7 +255,7 @@ namespace RobbyVisualizer
                         previousPoints = _points;
 
 
-                        Thread.Sleep(300);
+                        Thread.Sleep(200);
                         _numOfMoves++;
                     }
 
