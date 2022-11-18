@@ -103,7 +103,7 @@ namespace RobbyTheRobot
         Debug.Assert(File.Exists(path), "Built-in writing failed somehow");
         if (FileWrittenEvent != null)
         {
-          string metadata = $"Generation #{generationNum} successfully written to disk. Fitness: {text.Split(",")[1]}";
+          string metadata = $"Generation #{generationNum} successfully written to {path}. Fitness: {text.Split(",")[1]}";
           FileWrittenEvent(metadata);
         }
       });
