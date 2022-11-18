@@ -96,7 +96,7 @@ public class ButtonSprite : DrawableGameComponent
                 } catch(Exception){
 
                     // Message Box shows up if Exceptionn is thrown
-                    MessageBox.Show("Invalid Folder Entered! PLease Enter a Proper Test Folder!");
+                    MessageBox.Show("Invalid Folder Entered! Please Enter a Proper Test Folder!");
                     _isClicked = false;
                 }
             }            
